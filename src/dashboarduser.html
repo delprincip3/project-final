@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Utente - Ortoplan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMUhb23mH6JbuHkxE04dNJ7RSI3bRTKIMt/itbZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header -->
+    <header class="bg-green-600 text-white p-4 flex flex-col sm:flex-row justify-between items-center">
+        <h1 class="text-3xl mb-4 sm:mb-0">Ortoplan - Dashboard Utente</h1>
+        <nav class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+            <a href="{{ url_for('index') }}" class="text-white hover:underline">Home</a>
+            <a href="{{ url_for('login') }}" class="text-white hover:underline">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Main content -->
+    <div class="container mx-auto p-4">
+
+        <!-- Meteo Section -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Meteo Attuale</h2>
+            <div id="meteo" class="flex items-center space-x-4">
+                <i class="fas fa-cloud-sun fa-2x text-yellow-500"></i>
+                <div>
+                    <p id="weather-description">Caricamento...</p>
+                    <p id="temperature"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Piante Section -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Le Mie Piante</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full table-auto">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Nome</th>
+                            <th class="px-4 py-2">Specie</th>
+                            <th class="px-4 py-2">Periodo di Coltivazione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pianta in piante %}
+                        <tr>
+                            <td class="border px-4 py-2">{{ pianta.nome }}</td>
+                            <td class="border px-4 py-2">{{ pianta.specie }}</td>
+                            <td class="border px-4 py-2">{{ pianta.periodo_inizio }} - {{ pianta.periodo_fine }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('add_pianta') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Aggiungi Pianta</a>
+            </div>
+        </div>
+
+        <!-- Attività Section -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Le Mie Attività</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for attivita in attivita %}
+                <div class="bg-gray-100 p-4 rounded-lg shadow">
+                    <h3 class="font-bold">{{ attivita.pianta_nome }}</h3>
+                    <p>{{ attivita.descrizione }}</p>
+                    <p>Dal: {{ attivita.data_inizio }}</p>
+                    <p>Al: {{ attivita.data_fine }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('add_attivita') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Aggiungi Attività</a>
+            </div>
+        </div>
+
+        <!-- Grafico Avanzamento Giorni Section -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Avanzamento Giorni</h2>
+            <canvas id="progressChart"></canvas>
+        </div>
+
+        <!-- Notifiche Section -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-4">Notifiche</h2>
+            <ul id="notifications" class="list-disc list-inside">
+                {% for notifica in notifiche %}
+                <li>{{ notifica }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-green-600 text-white p-4 text-center">
+        <p>Copyright © 2024 - All rights reserved by delprincip3</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Fetch weather data from API and update DOM
+        function fetchWeather() {
+            axios.get('/api/weather')  // Placeholder URL, replace with actual API endpoint
+                .then(response => {
+                    const weatherData = response.data;
+                    document.getElementById('weather-description').textContent = weatherData.description;
+                    document.getElementById('temperature').textContent = `Temperatura: ${weatherData.temperature}°C`;
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error);
+                });
+        }
+
+        // Simulate days progression with Chart.js
+        function setupProgressChart() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            const progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],  // Add dynamic labels for days
+                    datasets: [{
+                        label: 'Avanzamento',
+                        data: [],  // Add dynamic data for progress
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Example: dynamically add data
+            let days = 0;
+            setInterval(() => {
+                days++;
+                progressChart.data.labels.push(`Giorno ${days}`);
+                progressChart.data.datasets[0].data.push(days);  // Example data
+                progressChart.update();
+            }, 1000);  // Update every second for simulation
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchWeather();
+            setupProgressChart();
+        });
+    </script>
+</body>
+</html>

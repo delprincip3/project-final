@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ortoplan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <!-- Logo/Title -->
+            <div class="flex items-center space-x-2">
+                <img src="src/logo.jpg" alt="Ortoplan Logo" class="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20">
+                
+            </div>
+            <!-- Mobile Menu Button -->
+            <div class="block lg:hidden">
+                <button id="mobile-menu-button" class="text-green-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <!-- Navigation Menu -->
+            <nav class="hidden lg:flex space-x-4">
+                <a href="#" class="text-gray-700 hover:text-green-600">Home</a>
+                <a href="#" class="text-gray-700 hover:text-green-600">About</a>
+                <a href="#" class="text-gray-700 hover:text-green-600">Services</a>
+                <a href="#" class="text-gray-700 hover:text-green-600">Contact</a>
+            </nav>
+            <!-- Login Button -->
+            <div class="hidden lg:block">
+                <a href="{{ url_for('login') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                    Login
+                </a>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden">
+            <nav class="px-2 pt-2 pb-4 space-y-1">
+                <a href="{{ url_for('index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Home</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">About</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Services</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Contact</a>
+                <a href="{{ url_for('login') }}" class="block px-3 py-2 mt-2 rounded-lg text-center bg-green-600 text-white hover:bg-green-700">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+
+    <!-- Hero Section -->
+    <div class="hero min-h-screen bg-cover bg-center" style="background-image: url(src/immortoplan.jpeg);">
+        <div class="hero-overlay bg-black bg-opacity-60"></div>
+        <div class="hero-content text-center text-neutral-content">
+            <div class="max-w-md px-4 py-8 bg-white bg-opacity-75 rounded-lg">
+                <h1 class="mb-5 text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">Benvenuti su Ortoplan</h1>
+                <p class="mb-5 text-sm sm:text-base lg:text-lg text-gray-700">
+                    Ortoplan è la tua app ideale per gestire la coltivazione delle tue piante in modo semplice ed efficace. 
+                    Con Ortoplan, potrai programmare le attività di coltivazione e i trattamenti necessari per le tue piante, 
+                    garantendo loro le cure ottimali. Inoltre, l'app ti permette di confrontare le tue programmazioni con le previsioni 
+                    meteo, aiutandoti a prendere decisioni informate e a massimizzare il rendimento del tuo orto. 
+                    Semplifica la gestione del tuo giardino con Ortoplan e trasforma il tuo pollice verde in una vera e propria scienza!
+                </p>
+                <a href="{{ url_for('login') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Scopri di più</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-4 bg-base-300 text-base-content">
+        <aside>
+            <p>&copy; 2024 - All rights reserved by ACME Industries Ltd</p>
+        </aside>
+    </footer>
+</body>
+</html>

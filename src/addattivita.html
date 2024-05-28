@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggiungi Attività</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+</head>
+<body>
+    <div class="hero min-h-screen bg-base-300 fixed top-0 left-0 w-full">
+        <div class="hero-content flex-col lg:flex-row-reverse">
+            <div class="text-center lg:text-left">
+                <h1 class="text-5xl font-bold">Aggiungi una nuova Attività</h1>
+            </div>
+            <div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class="flashes text-red-600">
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+                <form class="card-body" method="post" id="AddAttivitaForm">
+                    {{ form.csrf_token }}
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Pianta</span>
+                        </label>
+                        {{ form.pianta_id(class="input input-bordered w-full max-w-xs") }}
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Descrizione</span>
+                        </label>
+                        {{ form.descrizione(class="input input-bordered w-full max-w-xs") }}
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Data Inizio</span>
+                        </label>
+                        {{ form.data_inizio(class="input input-bordered w-full max-w-xs") }}
+                    </div>
+                    <div class="form-control mb-4">
+                        <label class="label">
+                            <span class="label-text">Data Fine</span>
+                        </label>
+                        {{ form.data_fine(class="input input-bordered w-full max-w-xs") }}
+                    </div>
+                    <div class="form-control">
+                        <input type="submit" value="Aggiungi" class="btn btn-primary w-full">
+                        <div class="space-x-4">
+                            <a class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full" href="{{ url_for('dashboard_user') }}">Torna alla Dashboard</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer class="footer footer-center p-4 bg-base-300 text-base-content">
+        <aside>
+            <p>Copyright © 2024 - All

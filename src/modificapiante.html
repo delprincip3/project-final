@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica Pianta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+</head>
+<body>
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-semibold mb-4">Modifica Pianta</h1>
+        <form method="post">
+            {{ form.csrf_token }}
+            <div class="mb-4">
+                <label class="block text-gray-700" for="nome">Nome</label>
+                {{ form.nome }}
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700" for="specie">Specie</label>
+                {{ form.specie }}
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Salva Modifiche</button>
+        </form>
+    </div>
+</body>
+</html>

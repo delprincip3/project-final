@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav class="bg-green-600 text-white p-4">
+            <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 sm:mb-0">
+                    <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo Ortoplan" class="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20">
+                    <span class="text-2xl font-bold">Admin Dashboard</span>
+                </div>
+                <div>
+                    <a href="{{ url_for('login') }}" class="text-white hover:underline">Logout</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container mx-auto p-6 flex-grow">
+            <h1 class="text-3xl font-semibold mb-4">Benvenuto, Admin!</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Sezione Gestione Utenze -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4">Gestione Utenze</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr>
+                                    <th class="border px-4 py-2">ID</th>
+                                    <th class="border px-4 py-2">Tipo</th>
+                                    <th class="border px-4 py-2">Nome</th>
+                                    <th class="border px-4 py-2">Cognome</th>
+                                    <th class="border px-4 py-2">Email</th>
+                                    <th class="border px-4 py-2">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td class="border px-4 py-2">{{ user.id }}</td>
+                                    <td class="border px-4 py-2">{{ user.tipo }}</td>
+                                    <td class="border px-4 py-2">{{ user.nome }}</td>
+                                    <td class="border px-4 py-2">{{ user.cognome }}</td>
+                                    <td class="border px-4 py-2">{{ user.email }}</td>
+                                    <td class="border px-4 py-2">
+                                        <a href="{{ url_for('edit_user', user_id=user.id) }}" class="text-blue-600 hover:underline">Modifica</a> |
+                                        <a href="{{ url_for('delete_user', user_id=user.id) }}" class="text-red-600 hover:underline">Elimina</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sezione Gestione Piante -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4">Gestione Piante</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr>
+                                    <th class="border px-4 py-2">ID</th>
+                                    <th class="border px-4 py-2">Nome</th>
+                                    <th class="border px-4 py-2">Periodo Coltivazione</th>
+                                    <th class="border px-4 py-2">Utente</th>
+                                    <th class="border px-4 py-2">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pianta in piante %}
+                                <tr>
+                                    <td class="border px-4 py-2">{{ pianta.id }}</td>
+                                    <td class="border px-4 py-2">{{ pianta.nome }}</td>
+                                    <td class="border px-4 py-2">{{ pianta.periodo_coltivazione }}</td>
+                                    <td class="border px-4 py-2">{{ pianta.utente.nome }} {{ pianta.utente.cognome }}</td>
+                                    <td class="border px-4 py-2">
+                                        <a href="{{ url_for('edit_pianta', pianta_id=pianta.id) }}" class="text-blue-600 hover:underline">Modifica</a> |
+                                        <a href="{{ url_for('delete_pianta', pianta_id=pianta.id) }}" class="text-red-600 hover:underline">Elimina</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
