@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aggiungi Trattamento</title>
+    <title>Modifica Trattamento</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-semibold mb-4">Aggiungi Trattamento</h1>
+        <h1 class="text-3xl font-semibold mb-4">Modifica Trattamento</h1>
         <form method="POST">
             {{ form.hidden_tag() }}
             <div class="mb-4">
@@ -27,7 +27,7 @@
                 {{ form.data_fine.label(class="block text-gray-700") }}
                 {{ form.data_fine(class="form-input mt-1 block w-full") }}
             </div>
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Invia</button>
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Salva Modifiche</button>
         </form>
     </div>
 </body>

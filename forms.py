@@ -1,10 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SubmitField,PasswordField,HiddenField
-from wtforms.validators import InputRequired, DataRequired,Email,Length
+from wtforms import StringField, SelectField, SubmitField, PasswordField
+from wtforms.validators import InputRequired, DataRequired, Email, Length
 from wtforms.fields import DateField
 
 class RegisterForm(FlaskForm):
-    tipo = SelectField('Tipo', choices=[ ('user', 'User')], validators=[DataRequired()])
+    tipo = SelectField('Tipo', choices=[('user', 'User')], validators=[DataRequired()])
     nome = StringField('Nome', validators=[DataRequired(), Length(max=100)])
     cognome = StringField('Cognome', validators=[DataRequired(), Length(max=100)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(max=100)])
@@ -28,7 +28,6 @@ class LoginForm(FlaskForm):
     password = StringField('Password', validators=[InputRequired()])
 
 class EliminaPiantaForm(FlaskForm):
-    
     conferma = SubmitField('Conferma Eliminazione')
 
 class ModificaUtenteForm(FlaskForm):
@@ -40,3 +39,8 @@ class ModificaUtenteForm(FlaskForm):
 
 class EliminaUtenteForm(FlaskForm):
     submit = SubmitField('Conferma Eliminazione')
+
+class AssociaPiantaTrattamentoForm(FlaskForm):
+    pianta_id = SelectField('Pianta', coerce=int, validators=[DataRequired()])
+    trattamento_id = SelectField('Trattamento', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Associa')

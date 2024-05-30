@@ -13,7 +13,7 @@
 
     <!-- Header -->
     <header class="bg-green-700 text-white p-4 flex flex-col sm:flex-row justify-between items-center">
-        <h1 class="text-3xl mb-4 sm:mb-0">Ortoplan - Dashboard Utente</h1>
+        <h1 class="text-3xl mb-4 sm:mb-0">Benvenuto, {{ utente.nome }} {{ utente.cognome }}</h1>
         <nav class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
             <a href="{{ url_for('index') }}" class="text-white hover:underline">Home</a>
             <a href="{{ url_for('login') }}" class="text-white hover:underline">Logout</a>
@@ -79,6 +79,30 @@
             <div class="mt-4">
                 <a href="{{ url_for('add_attivita') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Aggiungi Attività</a>
             </div>
+        </div>
+
+        <!-- Associa Pianta e Trattamento Section -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Associa Pianta e Trattamento</h2>
+            <form action="{{ url_for('associa_pianta_trattamento') }}" method="post">
+                <div class="mb-4">
+                    <label for="pianta_id" class="block text-gray-700">Seleziona Pianta:</label>
+                    <select name="pianta_id" id="pianta_id" class="block w-full mt-1">
+                        {% for pianta in piante %}
+                        <option value="{{ pianta.id }}">{{ pianta.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="trattamento_id" class="block text-gray-700">Seleziona Trattamento:</label>
+                    <select name="trattamento_id" id="trattamento_id" class="block w-full mt-1">
+                        {% for trattamento in trattamenti %}
+                        <option value="{{ trattamento.id }}">{{ trattamento.descrizione }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Associa</button>
+            </form>
         </div>
 
         <!-- Grafico Avanzamento Giorni Section -->

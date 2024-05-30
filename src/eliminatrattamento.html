@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elimina Trattamento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-semibold mb-4">Elimina Trattamento</h1>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <p>Sei sicuro di voler eliminare questo trattamento?</p>
+            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Elimina</button>
+            <a href="{{ url_for('dashboard_admin') }}" class="bg-gray-500 text-white px-4 py-2 rounded ml-2">Annulla</a>
+        </form>
+    </div>
+</body>
+</html>

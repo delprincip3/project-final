@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -150,9 +150,9 @@
                     <td class="px-6 py-4">{{ trattamento.data_inizio }}</td>
                     <td class="px-6 py-4">{{ trattamento.data_fine }}</td>
                     <td class="px-6 py-4">
-                       <!--  <a href="{{ url_for('modifica_trattamento', trattamento_id=trattamento.id) }}" class="text-blue-500 hover:underline">Modifica</a>
+                       <a href="{{ url_for('modifica_trattamento', trattamento_id=trattamento.id) }}" class="text-blue-500 hover:underline">Modifica</a>
                         <a href="{{ url_for('elimina_trattamento', trattamento_id=trattamento.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
-                    </td>-->
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

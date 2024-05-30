@@ -14,6 +14,13 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # definizioni modelli
+user_plant_treatment = db.Table('user_plant_treatment',
+    db.Column('user_id', db.Integer, db.ForeignKey('utenza.id'), primary_key=True),
+    db.Column('plant_id', db.Integer, db.ForeignKey('piante.id'), primary_key=True),
+    db.Column('treatment_id', db.Integer, db.ForeignKey('trattamenti.id'), primary_key=True)
+)
+
+# Definizione dei modelli
 class Utenza(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     tipo = db.Column(db.String(50), nullable=False)
@@ -21,6 +28,7 @@ class Utenza(db.Model):
     cognome = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    treatments = db.relationship('Trattamenti', secondary=user_plant_treatment, backref='Utenza')
 
     def __init__(self, tipo, nome, cognome, email, password):
         self.tipo = tipo
@@ -33,6 +41,7 @@ class Piante(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nome = db.Column(db.String(100), nullable=False)
     specie = db.Column(db.String(100), nullable=False)
+    treatments = db.relationship('Trattamenti', backref='pianta')
 
     def __init__(self, nome, specie):
         self.nome = nome
@@ -64,7 +73,25 @@ def dashboard_admin():
 
 @app.route('/dashboarduser')
 def dashboard_user():
-    return render_template('dashboarduser.html')
+    # Controlla se l'utente è autenticato
+    if 'user_id' not in session:
+        flash('Effettua il login per accedere a questa pagina.')
+        return redirect(url_for('login'))
+    
+    # Ottieni l'utente corrente dalla sessione
+    utente = Utenza.query.get(session['user_id'])
+
+    if utente is not None:
+        # Ottieni i trattamenti associati all'utente solo se l'utente è stato trovato correttamente
+        trattamenti = utente.treatments
+        # Estrai le piante associate ai trattamenti
+        piante = [trattamento.pianta for trattamento in trattamenti]
+        return render_template('dashboarduser.html', utente=utente, piante=piante)
+    else:
+        flash('Utente non trovato!')
+        return redirect(url_for('index'))
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -74,6 +101,7 @@ def login():
         if utente and utente.password == request.form['password']:
             session['user_id'] = utente.id
             session['user_type'] = utente.tipo
+            flash('Accesso effettuato con successo!', 'success')
             if utente.tipo == 'Admin':
                 return redirect(url_for('dashboard_admin'))
             else:
@@ -81,6 +109,7 @@ def login():
         else:
             flash('Credenziali non valide, riprova!', 'error')
     return render_template('login.html', form=form)
+
 
 @app.route('/registrati', methods=['GET', 'POST'])
 def registrati():
@@ -139,6 +168,8 @@ def add_pianta():
 @app.route('/add_attivita', methods=['GET', 'POST'])
 def add_attivita():
     form = TrattamentiForm()
+    form.pianta_id.choices = [(pianta.id, pianta.nome) for pianta in Piante.query.all()]
+    
     if form.validate_on_submit():
         new_trattamento = Trattamenti(
             pianta_id=form.pianta_id.data,
@@ -149,7 +180,7 @@ def add_attivita():
         db.session.add(new_trattamento)
         db.session.commit()
         flash('Nuova attività aggiunta con successo!', 'success')
-        return redirect(url_for('dashboard_user'))
+        return redirect(url_for('dashboard_admin'))
     return render_template('addattivita.html', form=form)
 
 @app.route('/modifica_utente/<int:user_id>', methods=['GET', 'POST'])
@@ -177,5 +208,57 @@ def elimina_utente(user_id):
         return redirect(url_for('dashboard_admin'))
     return render_template('eliminautente.html', form=form)
 
+@app.route('/modifica_trattamento/<int:trattamento_id>', methods=['GET', 'POST'])
+def modifica_trattamento(trattamento_id):
+    trattamento = Trattamenti.query.get_or_404(trattamento_id)
+    form = TrattamentiForm(obj=trattamento)
+    form.pianta_id.choices = [(pianta.id, pianta.nome) for pianta in Piante.query.all()]
+
+    if form.validate_on_submit():
+        trattamento.pianta_id = form.pianta_id.data
+        trattamento.descrizione = form.descrizione.data
+        trattamento.data_inizio = form.data_inizio.data
+        trattamento.data_fine = form.data_fine.data
+        db.session.commit()
+        flash('Trattamento modificato con successo!', 'success')
+        return redirect(url_for('dashboard_admin'))
+    return render_template('modificatrattamento.html', form=form)
+
+
+@app.route('/elimina_trattamento/<int:trattamento_id>', methods=['GET', 'POST'])
+def elimina_trattamento(trattamento_id):
+    trattamento = Trattamenti.query.get_or_404(trattamento_id)
+    form = EliminaPiantaForm()  
+    if form.validate_on_submit():
+        db.session.delete(trattamento)
+        db.session.commit()
+        flash('Trattamento eliminato con successo!', 'success')
+        return redirect(url_for('dashboard_admin'))
+    return render_template('eliminatrattamento.html', form=form)
+@app.route('/associa_pianta_trattamento', methods=['GET', 'POST'])
+def associa_pianta_trattamento():
+    form = AssociaPiantaTrattamentoForm()
+    form.pianta_id.choices = [(pianta.id, pianta.nome) for pianta in Piante.query.all()]
+    form.trattamento_id.choices = [(trattamento.id, trattamento.descrizione) for trattamento in Trattamenti.query.all()]
+    
+    if form.validate_on_submit():
+        pianta_id = form.pianta_id.data
+        trattamento_id = form.trattamento_id.data
+
+        # Ottenere gli oggetti pianta e trattamento dalla base di dati
+        pianta = Piante.query.get(pianta_id)
+        trattamento = Trattamenti.query.get(trattamento_id)
+
+        if pianta and trattamento:
+            # Associare il trattamento alla pianta
+            pianta.treatments.append(trattamento)
+            db.session.commit()
+            flash('Trattamento associato alla pianta con successo!', 'success')
+            return redirect(url_for('dashboard_admin'))
+        else:
+            flash('Impossibile associare il trattamento alla pianta.', 'error')
+
+    return render_template('associa_pianta_trattamento.html', form=form)
+
 if __name__ == "__main__":
-    app.run(debug=True)
+   app.run(debug=True)
