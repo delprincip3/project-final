@@ -4,94 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const dropdownButtons = document.querySelectorAll('.dropdown');
+            dropdownButtons.forEach(function (dropdownButton) {
+                dropdownButton.addEventListener('click', function () {
+                    this.querySelector('.dropdown-content').classList.toggle('hidden');
+                });
+            });
+        });
+    </script>
 </head>
 <body class="bg-gray-100">
-    <div class="min-h-screen flex flex-col">
-        <!-- Navbar -->
-        <nav class="bg-green-600 text-white p-4">
-            <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
-                <div class="flex items-center space-x-2 mb-4 sm:mb-0">
-                    <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo Ortoplan" class="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20">
-                    <span class="text-2xl font-bold">Admin Dashboard</span>
-                </div>
-                <div>
-                    <a href="{{ url_for('login') }}" class="text-white hover:underline">Logout</a>
-                </div>
+    
+    <header class="bg-green-700 shadow-md p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- Logo/Title -->
+            <div class="flex items-center space-x-2">
+                <img src="src/logo.jpg" alt="Ortoplan Logo" class="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 rounded-full">
+                <span class="text-xl font-bold text-white">Admin Dashboard</span>
             </div>
-        </nav>
-
-        <!-- Main Content -->
-        <div class="container mx-auto p-6 flex-grow">
-            <h1 class="text-3xl font-semibold mb-4">Benvenuto, Admin!</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Sezione Gestione Utenze -->
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-2xl font-semibold mb-4">Gestione Utenze</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead>
-                                <tr>
-                                    <th class="border px-4 py-2">ID</th>
-                                    <th class="border px-4 py-2">Tipo</th>
-                                    <th class="border px-4 py-2">Nome</th>
-                                    <th class="border px-4 py-2">Cognome</th>
-                                    <th class="border px-4 py-2">Email</th>
-                                    <th class="border px-4 py-2">Azione</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for user in users %}
-                                <tr>
-                                    <td class="border px-4 py-2">{{ user.id }}</td>
-                                    <td class="border px-4 py-2">{{ user.tipo }}</td>
-                                    <td class="border px-4 py-2">{{ user.nome }}</td>
-                                    <td class="border px-4 py-2">{{ user.cognome }}</td>
-                                    <td class="border px-4 py-2">{{ user.email }}</td>
-                                    <td class="border px-4 py-2">
-                                        <a href="{{ url_for('edit_user', user_id=user.id) }}" class="text-blue-600 hover:underline">Modifica</a> |
-                                        <a href="{{ url_for('delete_user', user_id=user.id) }}" class="text-red-600 hover:underline">Elimina</a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+            <!-- Mobile Menu Button -->
+            <div class="block lg:hidden">
+                <button id="mobile-menu-button" class="text-green-100 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <!-- Navigation Menu (Mobile) -->
+                <nav id="mobile-menu" class="hidden">
+                    <div class="dropdown dropdown-hover">
+                       
+                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 bg-white shadow rounded-lg">
+                            <li><a href="{{ url_for('add_pianta') }}" class="hover:underline">Aggiungi Pianta</a></li>
+                            <li><a href="{{ url_for('add_attivita') }}" class="hover:underline">Aggiungi Attività</a></li>
+                            <li><a href="{{ url_for('registrati') }}" class="hover:underline">Crea Utente</a></li>
+                            <li><a href="{{ url_for('login') }}" class="hover:underline">Logout</a></li>
+                        </ul>
                     </div>
-                </div>
-
-                <!-- Sezione Gestione Piante -->
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-2xl font-semibold mb-4">Gestione Piante</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead>
-                                <tr>
-                                    <th class="border px-4 py-2">ID</th>
-                                    <th class="border px-4 py-2">Nome</th>
-                                    <th class="border px-4 py-2">Periodo Coltivazione</th>
-                                    <th class="border px-4 py-2">Utente</th>
-                                    <th class="border px-4 py-2">Azione</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for pianta in piante %}
-                                <tr>
-                                    <td class="border px-4 py-2">{{ pianta.id }}</td>
-                                    <td class="border px-4 py-2">{{ pianta.nome }}</td>
-                                    <td class="border px-4 py-2">{{ pianta.periodo_coltivazione }}</td>
-                                    <td class="border px-4 py-2">{{ pianta.utente.nome }} {{ pianta.utente.cognome }}</td>
-                                    <td class="border px-4 py-2">
-                                        <a href="{{ url_for('edit_pianta', pianta_id=pianta.id) }}" class="text-blue-600 hover:underline">Modifica</a> |
-                                        <a href="{{ url_for('delete_pianta', pianta_id=pianta.id) }}" class="text-red-600 hover:underline">Elimina</a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                </nav>
+            </div>
+            <!-- Navigation Menu (Desktop) -->
+            <nav class="hidden lg:flex space-x-4">
+                <a href="{{ url_for('add_pianta') }}" class="text-white hover:underline">Aggiungi Pianta</a>
+                <a href="{{ url_for('add_attivita') }}" class="text-white hover:underline">Aggiungi Attività</a>
+                <a href="{{ url_for('registrati') }}" class="text-white hover:underline">Crea Utente</a>
+            </nav>
+            <!-- Login Button -->
+            <div class="hidden lg:block">
+                <a href="{{ url_for('login') }}" class="bg-green-400 text-white px-4 py-2 rounded-lg hover:bg-green-700">Logout</a>
             </div>
         </div>
+    </header>
+    
+    <div class="min-h-screen flex flex-col">
+        <!-- Main content -->
+        <main class="container mx-auto p-6">
+            <h1 class="text-3xl font-semibold mb-4">Dashboard Admin</h1>
+            <div class="bg-white rounded-lg shadow p-6 mb-6 overflow-x-auto text-center">
+                <h2 class="text-2xl font-semibold mb-4">Utenti</h2>
+                <table class="min-w-full bg-white border border-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">ID</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Nome</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Cognome</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Email</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Tipo</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr class="border-b">
+                            <td class="px-4 py-2">{{ user.id }}</td>
+                            <td class="px-4 py-2">{{ user.nome }}</td>
+                            <td class="px-4 py-2">{{ user.cognome }}</td>
+                            <td class="px-4 py-2">{{ user.email }}</td>
+                            <td class="px-4 py-2">{{ user.tipo }}</td>
+                            <td class="px-4 py-2">
+                                <a href="{{ url_for('modifica_utente', user_id=user.id) }}" class="text-blue-500 hover:underline">Modifica</a>
+                                <a href="{{ url_for('elimina_utente', user_id=user.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="bg-white rounded-lg shadow p-8 overflow-x-auto text-center">
+                <h2 class="text-2xl font-semibold mb-4 text-center">Piante</h2>
+                <table class="min-w-full bg-white border border-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">ID</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Nome</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Specie</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pianta in piante %}
+                        <tr class="border-b">
+                            <td class="px-6 py-4">{{  pianta.id}}</td>
+                            <td class="px-6 py-4">{{  pianta.nome}}</td>
+                            <td class="px-6 py-4">{{  pianta.specie}}</td>
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('modifica_pianta', pianta_id=pianta.id) }}" class="text-blue-500 hover:underline">Modifica</a>
+                                <a href="{{ url_for('elimina_pianta', pianta_id=pianta.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
     </div>
+    <div class="bg-white rounded-lg shadow p-8 overflow-x-auto text-center">
+        <h2 class="text-2xl font-semibold mb-4 text-center">Trattamenti</h2>
+        <table class="min-w-full bg-white border border-gray-200">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2 bg-gray-200 text-gray-600">ID</th>
+                    <th class="px-4 py-2 bg-gray-200 text-gray-600">Pianta</th>
+                    <th class="px-4 py-2 bg-gray-200 text-gray-600">Descrizione</th>
+                    <th class="px-4 py-2 bg-gray-200 text-gray-600">Data Inizio</th>
+                    <th class="px-4 py-2 bg-gray-200 text-gray-600">Data Fine</th>
+                    <th class="px-4 py-2 bg-gray-200 text-gray-600">Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trattamento in trattamenti %}
+                <tr class="border-b">
+                    <td class="px-6 py-4">{{ trattamento.id }}</td>
+                    <td class="px-6 py-4">{{ trattamento.pianta_id }}</td>
+                    
+                    <td class="px-6 py-4">{{ trattamento.descrizione }}</td>
+                    <td class="px-6 py-4">{{ trattamento.data_inizio }}</td>
+                    <td class="px-6 py-4">{{ trattamento.data_fine }}</td>
+                    <td class="px-6 py-4">
+                       <!--  <a href="{{ url_for('modifica_trattamento', trattamento_id=trattamento.id) }}" class="text-blue-500 hover:underline">Modifica</a>
+                        <a href="{{ url_for('elimina_trattamento', trattamento_id=trattamento.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
+                    </td>-->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-green-600 text-white p-4 text-center">
+        <p>&copy; 2024 - All rights reserved by delprincip3</p>
+    </footer>
 </body>
 </html>

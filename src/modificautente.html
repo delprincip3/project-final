@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aggiungi Pianta</title>
+    <title>Modifica Utente</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
 </head>
 <body class="bg-gray-100">
+
+    <header>
+        
+    </header>
     <div class="min-h-screen flex flex-col">
         <!-- Navbar -->
         <nav class="bg-green-600 text-white p-4">
@@ -23,7 +27,7 @@
 
         <!-- Main Content -->
         <div class="container mx-auto p-6 flex-grow">
-            <h1 class="text-3xl font-semibold mb-4">Aggiungi una nuova Pianta</h1>
+            <h1 class="text-3xl font-semibold mb-4">Modifica Utente</h1>
             <div class="bg-white p-6 rounded-lg shadow-lg">
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
@@ -34,18 +38,26 @@
                 </ul>
                 {% endif %}
                 {% endwith %}
-                <form method="post" id="AddPiantaForm">
+                <form method="post" id="ModificaUtenteForm">
                     {{ form.csrf_token }}
                     <div class="mb-4">
                         <label class="block text-gray-700" for="nome">Nome</label>
                         {{ form.nome(class="form-input mt-1 block w-full") }}
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-700" for="specie">Specie</label>
-                        {{ form.specie(class="form-input mt-1 block w-full") }}
+                        <label class="block text-gray-700" for="cognome">Cognome</label>
+                        {{ form.cognome(class="form-input mt-1 block w-full") }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700" for="email">Email</label>
+                        {{ form.email(class="form-input mt-1 block w-full") }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700" for="tipo">Tipo</label>
+                        {{ form.tipo(class="form-input mt-1 block w-full") }}
                     </div>
                     <div class="flex items-center justify-between">
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Aggiungi</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Salva Modifiche</button>
                         <a href="{{ url_for('dashboard_admin') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Torna alla Dashboard</a>
                     </div>
                 </form>

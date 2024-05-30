@@ -28,5 +28,15 @@ class LoginForm(FlaskForm):
     password = StringField('Password', validators=[InputRequired()])
 
 class EliminaPiantaForm(FlaskForm):
-    pianta_id = HiddenField('ID della Pianta', validators=[DataRequired()])
+    
     conferma = SubmitField('Conferma Eliminazione')
+
+class ModificaUtenteForm(FlaskForm):
+    tipo = SelectField('Tipo', choices=[('Admin', 'Admin'), ('User', 'User')], validators=[DataRequired()])
+    nome = StringField('Nome', validators=[DataRequired()])
+    cognome = StringField('Cognome', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Salva Modifiche')
+
+class EliminaUtenteForm(FlaskForm):
+    submit = SubmitField('Conferma Eliminazione')

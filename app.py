@@ -1,7 +1,6 @@
-from flask import Flask, render_template, request, flash, redirect, url_for,session
+from flask import Flask, render_template, request, flash, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-from forms import LoginForm, RegisterForm, PianteForm, TrattamentiForm, EliminaPiantaForm
-from werkzeug.security import generate_password_hash
+from forms import LoginForm, RegisterForm, PianteForm, TrattamentiForm, EliminaPiantaForm, EliminaUtenteForm, ModificaUtenteForm
 from datetime import timedelta
 from flask_migrate import Migrate
 
@@ -58,7 +57,10 @@ def index():
 
 @app.route('/dashboardadmin')
 def dashboard_admin():
-    return render_template('dashboardadmin.html')
+    users = Utenza.query.all()
+    piante = Piante.query.all()
+    trattamenti = Trattamenti.query.all() 
+    return render_template('dashboardadmin.html', users=users, piante=piante,trattamenti = trattamenti)
 
 @app.route('/dashboarduser')
 def dashboard_user():
@@ -70,6 +72,8 @@ def login():
     if form.validate_on_submit():
         utente = Utenza.query.filter_by(email=request.form['email']).first()
         if utente and utente.password == request.form['password']:
+            session['user_id'] = utente.id
+            session['user_type'] = utente.tipo
             if utente.tipo == 'Admin':
                 return redirect(url_for('dashboard_admin'))
             else:
@@ -148,6 +152,30 @@ def add_attivita():
         return redirect(url_for('dashboard_user'))
     return render_template('addattivita.html', form=form)
 
+@app.route('/modifica_utente/<int:user_id>', methods=['GET', 'POST'])
+def modifica_utente(user_id):
+    utente = Utenza.query.get_or_404(user_id)
+    form = ModificaUtenteForm(obj=utente)
+    if form.validate_on_submit():
+        utente.tipo = form.tipo.data
+        utente.nome = form.nome.data
+        utente.cognome = form.cognome.data
+        utente.email = form.email.data
+        db.session.commit()
+        flash('Utente modificato con successo!', 'success')
+        return redirect(url_for('dashboard_admin'))
+    return render_template('modificautente.html', form=form)
+
+@app.route('/elimina_utente/<int:user_id>', methods=['GET', 'POST'])
+def elimina_utente(user_id):
+    utente = Utenza.query.get_or_404(user_id)
+    form = EliminaUtenteForm()
+    if form.validate_on_submit():
+        db.session.delete(utente)
+        db.session.commit()
+        flash('Utente eliminato con successo!', 'success')
+        return redirect(url_for('dashboard_admin'))
+    return render_template('eliminautente.html', form=form)
 
 if __name__ == "__main__":
     app.run(debug=True)

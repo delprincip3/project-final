@@ -6,21 +6,38 @@
     <title>Modifica Pianta</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
 </head>
-<body>
-    <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-semibold mb-4">Modifica Pianta</h1>
-        <form method="post">
-            {{ form.csrf_token }}
-            <div class="mb-4">
-                <label class="block text-gray-700" for="nome">Nome</label>
-                {{ form.nome }}
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav class="bg-green-600 text-white p-4">
+            <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 sm:mb-0">
+                    <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo Ortoplan" class="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20">
+                    <span class="text-2xl font-bold">Admin Dashboard</span>
+                </div>
+                <div>
+                    <a href="{{ url_for('login') }}" class="text-white hover:underline">Logout</a>
+                </div>
             </div>
-            <div class="mb-4">
-                <label class="block text-gray-700" for="specie">Specie</label>
-                {{ form.specie }}
-            </div>
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Salva Modifiche</button>
-        </form>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container mx-auto p-6 flex-grow">
+            <h1 class="text-3xl font-semibold mb-4">Modifica Pianta</h1>
+            <form method="post" class="bg-white p-6 rounded-lg shadow-lg">
+                {{ form.csrf_token }}
+                <div class="mb-4">
+                    <label class="block text-gray-700" for="nome">Nome</label>
+                    {{ form.nome(class_="form-input mt-1 block w-full") }}
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700" for="specie">Specie</label>
+                    {{ form.specie(class_="form-input mt-1 block w-full") }}
+                </div>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Salva Modifiche</button>
+                <a href="{{ url_for('dashboard_admin') }}" class="text-blue-500 hover:underline ml-4">Annulla</a>
+            </form>
+        </div>
     </div>
 </body>
 </html>
