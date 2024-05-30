@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servizi - Ortoplan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMUhb23mH6JbuHkxE04dNJ7RSI3bRTKIMt/itbZ" crossorigin="anonymous">
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header -->
+    <header class="bg-green-700 text-white p-4 flex flex-col sm:flex-row justify-between items-center">
+        <h1 class="text-3xl mb-4 sm:mb-0">Ortoplan - Servizi</h1>
+        <nav class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+            <a href="{{ url_for('index') }}" class="text-white hover:underline">Home</a>
+            <a href="{{ url_for('login') }}" class="text-white hover:underline">Login</a>
+        </nav>
+    </header>
+
+    <!-- Main content -->
+    <div class="container mx-auto p-4">
+        <section class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Descrizione dei Servizi Offerti dalla App Ortoplan</h2>
+            <p>L'applicazione web, Ortoplan, è progettata per aiutare gli utenti a gestire le loro piante e attività di giardinaggio in modo organizzato ed efficiente. Offre una gamma di servizi che coprono vari aspetti della gestione delle piante, dal monitoraggio delle condizioni meteorologiche alla pianificazione delle attività di coltivazione e trattamento. Ecco una panoramica dei principali servizi offerti:</p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h3 class="text-xl font-bold mb-2">Gestione delle Piante</h3>
+            <ul class="list-disc list-inside">
+                <li><strong>Visualizzazione delle Piante</strong>: Gli utenti possono visualizzare tutte le piante associate al loro account, inclusi dettagli come il nome, la specie e il periodo di coltivazione.</li>
+                <li><strong>Aggiunta di Nuove Piante</strong>: Gli utenti possono aggiungere nuove piante al loro account, specificando le informazioni rilevanti come nome, specie e periodo di coltivazione.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h3 class="text-xl font-bold mb-2">Gestione delle Attività</h3>
+            <ul class="list-disc list-inside">
+                <li><strong>Visualizzazione delle Attività</strong>: Gli utenti possono visualizzare tutte le attività di giardinaggio associate alle loro piante. Le informazioni includono il nome della pianta, la descrizione dell'attività, e le date di inizio e fine.</li>
+                <li><strong>Aggiunta di Attività</strong>: Gli utenti possono aggiungere nuove attività, specificando le informazioni rilevanti per pianificare le loro attività di coltivazione.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h3 class="text-xl font-bold mb-2">Associazione Piante e Trattamenti</h3>
+            <ul class="list-disc list-inside">
+                <li><strong>Associazione di Trattamenti alle Piante</strong>: Gli utenti possono associare trattamenti specifici alle loro piante. Questo aiuta a tenere traccia dei trattamenti effettuati e a pianificare quelli futuri.</li>
+                <li><strong>Visualizzazione dei Trattamenti</strong>: Gli utenti possono vedere tutti i trattamenti associati a ciascuna delle loro piante.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h3 class="text-xl font-bold mb-2">Monitoraggio delle Condizioni Meteorologiche</h3>
+            <ul class="list-disc list-inside">
+                <li><strong>Meteo Attuale</strong>: La dashboard dell'utente include una sezione dedicata alle condizioni meteorologiche attuali, che fornisce descrizioni del meteo e informazioni sulla temperatura. Questo è utile per pianificare le attività di giardinaggio in base alle condizioni climatiche.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h3 class="text-xl font-bold mb-2">Analisi e Visualizzazione dei Dati</h3>
+            <ul class="list-disc list-inside">
+                <li><strong>Grafico di Avanzamento Giorni</strong>: La dashboard include un grafico che simula l'avanzamento dei giorni, permettendo agli utenti di monitorare il progresso delle loro attività di coltivazione nel tempo.</li>
+                <li><strong>Notifiche</strong>: Gli utenti possono ricevere notifiche su eventi importanti relativi alle loro piante e attività di giardinaggio.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h3 class="text-xl font-bold mb-2">Autenticazione e Sicurezza</h3>
+            <ul class="list-disc list-inside">
+                <li><strong>Sistema di Login e Logout</strong>: Gli utenti devono effettuare il login per accedere alla dashboard e ai servizi personalizzati. La sessione utente è gestita in modo sicuro per garantire la protezione delle informazioni personali.</li>
+                <li><strong>Ruoli Utente</strong>: Il sistema supporta diversi tipi di utenti (ad esempio, Admin e utenti normali), ciascuno con permessi specifici e accesso a funzionalità diverse.</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h3 class="text-xl font-bold mb-2">Vantaggi per gli Utenti</h3>
+            <ul class="list-disc list-inside">
+                <li><strong>Organizzazione</strong>: Ortoplan aiuta gli utenti a mantenere tutte le informazioni sulle loro piante e attività in un unico luogo, migliorando l'organizzazione e l'efficienza.</li>
+                <li><strong>Pianificazione</strong>: Con la capacità di aggiungere e visualizzare attività e trattamenti, gli utenti possono pianificare meglio le loro attività di giardinaggio e assicurarsi che le piante ricevano la cura necessaria.</li>
+                <li><strong>Monitoraggio</strong>: Le funzionalità di monitoraggio delle condizioni meteorologiche e di visualizzazione dei dati aiutano gli utenti a prendere decisioni informate e a monitorare i progressi delle loro attività di coltivazione.</li>
+                <li><strong>Personalizzazione</strong>: Ogni utente ha accesso a una dashboard personalizzata che riflette le loro piante e attività specifiche, rendendo l'esperienza più rilevante e utile.</li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-green-600 text-white p-4 text-center">
+        <p>Copyright © 2024 - All rights reserved by delprincip3</p>
+    </footer>
+</body>
+</html>

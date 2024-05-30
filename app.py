@@ -64,6 +64,10 @@ class Trattamenti(db.Model):
 def index():
     return render_template('index.html')
 
+@app.route('/servizi')
+def servizi():
+    return render_template('servizi.html')
+
 @app.route('/dashboardadmin')
 def dashboard_admin():
     users = Utenza.query.all()
