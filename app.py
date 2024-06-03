@@ -92,7 +92,7 @@ def dashboard_user():
         tutte_le_piante = Piante.query.all()  # Aggiungi tutte le piante per il dropdown
         tutti_i_trattamenti = Trattamenti.query.all()  # Aggiungi tutti i trattamenti per il dropdown
         notifiche = ["Notifica 1", "Notifica 2", "Notifica 3"]  # Esempio di notifiche
-        return render_template('dashboarduser.html', utente=utente, trattamenti=trattamenti, tutte_le_piante=tutte_le_piante, tutti_i_trattamenti=tutti_i_trattamenti, notifiche=notifiche)
+        return render_template('dashboarduser.html', utente=utente, trattamenti=trattamenti, tutte_le_piante=tutte_le_piante, tutti_i_trattamenti=tutti_i_trattamenti,piante =piante, notifiche=notifiche)
     else:
         flash('Utente non trovato!')
         return redirect(url_for('index'))
