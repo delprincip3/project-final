@@ -27,9 +27,9 @@
             <!-- Navigation Menu -->
             <nav class="hidden lg:flex space-x-4">
                 <a href="#" class="text-gray-700 hover:text-green-600">Home</a>
-                <a href="#" class="text-gray-700 hover:text-green-600">About</a>
+                
                 <a href="{{ url_for('servizi') }}" class="text-gray-700 hover:text-green-600">Servizi</a>
-                <a href="#" class="text-gray-700 hover:text-green-600">Contact</a>
+                <a href="{{ url_for('contatti') }}" class="text-gray-700 hover:text-green-600">Contact</a>
             </nav>
             <!-- Login Button -->
             <div class="hidden lg:block">
@@ -42,9 +42,9 @@
         <div id="mobile-menu" class="hidden lg:hidden">
             <nav class="px-2 pt-2 pb-4 space-y-1">
                 <a href="{{ url_for('index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Home</a>
-                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">About</a>
+                
                 <a href="{{ url_for('servizi') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Servizi</a>
-                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Contact</a>
+                <a href="{{ url_for('contatti') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Contact</a>
                 <a href="{{ url_for('login') }}" class="block px-3 py-2 mt-2 rounded-lg text-center bg-green-600 text-white hover:bg-green-700">Login</a>
             </nav>
         </div>

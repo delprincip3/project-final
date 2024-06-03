@@ -71,6 +71,10 @@ def index():
 def servizi():
     return render_template('servizi.html')
 
+@app.route('/contact')
+def contatti():
+    return render_template('contatti.html')
+
 @app.route('/dashboardadmin')
 def dashboard_admin():
     users = Utenza.query.all()
