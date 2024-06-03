@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session
+from flask import Flask, render_template, request, flash, redirect, url_for, session,jsonify
 from flask_sqlalchemy import SQLAlchemy
-from forms import LoginForm, RegisterForm, PianteForm, TrattamentiForm, EliminaPiantaForm, EliminaUtenteForm, ModificaUtenteForm
+from forms import LoginForm, RegisterForm, PianteForm, TrattamentiForm, EliminaPiantaForm, EliminaUtenteForm, ModificaUtenteForm, AssociaPiantaTrattamentoForm
 from datetime import timedelta
 from flask_migrate import Migrate
 
@@ -20,7 +20,7 @@ user_plant_treatment = db.Table('user_plant_treatment',
     db.Column('treatment_id', db.Integer, db.ForeignKey('trattamenti.id'), primary_key=True)
 )
 
-# Definizione dei modelli
+
 class Utenza(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     tipo = db.Column(db.String(50), nullable=False)
@@ -28,7 +28,7 @@ class Utenza(db.Model):
     cognome = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    treatments = db.relationship('Trattamenti', secondary=user_plant_treatment, backref='Utenza')
+    treatments = db.relationship('Trattamenti', backref='utente')
 
     def __init__(self, tipo, nome, cognome, email, password):
         self.tipo = tipo
@@ -36,6 +36,7 @@ class Utenza(db.Model):
         self.cognome = cognome
         self.email = email
         self.password = password
+
 
 class Piante(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -50,12 +51,14 @@ class Piante(db.Model):
 class Trattamenti(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     pianta_id = db.Column(db.Integer, db.ForeignKey('piante.id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('utenza.id'), nullable=True)
     descrizione = db.Column(db.Text, nullable=False)
     data_inizio = db.Column(db.Date, nullable=False)
     data_fine = db.Column(db.Date, nullable=True)
 
-    def __init__(self, pianta_id, descrizione, data_inizio, data_fine=None):
+    def __init__(self, pianta_id, user_id, descrizione, data_inizio, data_fine=None):
         self.pianta_id = pianta_id
+        self.user_id = user_id
         self.descrizione = descrizione
         self.data_inizio = data_inizio
         self.data_fine = data_fine
@@ -73,24 +76,23 @@ def dashboard_admin():
     users = Utenza.query.all()
     piante = Piante.query.all()
     trattamenti = Trattamenti.query.all() 
-    return render_template('dashboardadmin.html', users=users, piante=piante,trattamenti = trattamenti)
+    return render_template('dashboardadmin.html', users=users, piante=piante, trattamenti=trattamenti)
 
 @app.route('/dashboarduser')
 def dashboard_user():
-    # Controlla se l'utente è autenticato
     if 'user_id' not in session:
         flash('Effettua il login per accedere a questa pagina.')
         return redirect(url_for('login'))
     
-    # Ottieni l'utente corrente dalla sessione
     utente = Utenza.query.get(session['user_id'])
 
     if utente is not None:
-        # Ottieni i trattamenti associati all'utente solo se l'utente è stato trovato correttamente
         trattamenti = utente.treatments
-        # Estrai le piante associate ai trattamenti
         piante = [trattamento.pianta for trattamento in trattamenti]
-        return render_template('dashboarduser.html', utente=utente, piante=piante)
+        tutte_le_piante = Piante.query.all()  # Aggiungi tutte le piante per il dropdown
+        tutti_i_trattamenti = Trattamenti.query.all()  # Aggiungi tutti i trattamenti per il dropdown
+        notifiche = ["Notifica 1", "Notifica 2", "Notifica 3"]  # Esempio di notifiche
+        return render_template('dashboarduser.html', utente=utente, trattamenti=trattamenti, tutte_le_piante=tutte_le_piante, tutti_i_trattamenti=tutti_i_trattamenti, notifiche=notifiche)
     else:
         flash('Utente non trovato!')
         return redirect(url_for('index'))
@@ -114,7 +116,6 @@ def login():
             flash('Credenziali non valide, riprova!', 'error')
     return render_template('login.html', form=form)
 
-
 @app.route('/registrati', methods=['GET', 'POST'])
 def registrati():
     form = RegisterForm()
@@ -124,7 +125,7 @@ def registrati():
             nome=form.nome.data,
             cognome=form.cognome.data,
             email=form.email.data,
-            password=form.password.data  # hashed_password
+            password=form.password.data
         )
         db.session.add(new_user)
         db.session.commit()
@@ -228,41 +229,39 @@ def modifica_trattamento(trattamento_id):
         return redirect(url_for('dashboard_admin'))
     return render_template('modificatrattamento.html', form=form)
 
-
 @app.route('/elimina_trattamento/<int:trattamento_id>', methods=['GET', 'POST'])
 def elimina_trattamento(trattamento_id):
     trattamento = Trattamenti.query.get_or_404(trattamento_id)
-    form = EliminaPiantaForm()  
+    form = EliminaPiantaForm()
     if form.validate_on_submit():
         db.session.delete(trattamento)
         db.session.commit()
         flash('Trattamento eliminato con successo!', 'success')
         return redirect(url_for('dashboard_admin'))
     return render_template('eliminatrattamento.html', form=form)
-@app.route('/associa_pianta_trattamento', methods=['GET', 'POST'])
+
+@app.route('/associa_pianta_trattamento', methods=['POST'])
 def associa_pianta_trattamento():
-    form = AssociaPiantaTrattamentoForm()
-    form.pianta_id.choices = [(pianta.id, pianta.nome) for pianta in Piante.query.all()]
-    form.trattamento_id.choices = [(trattamento.id, trattamento.descrizione) for trattamento in Trattamenti.query.all()]
-    
-    if form.validate_on_submit():
-        pianta_id = form.pianta_id.data
-        trattamento_id = form.trattamento_id.data
+    if 'user_id' not in session:
+        return jsonify({'message': 'Effettua il login per procedere!'}), 401
 
-        # Ottenere gli oggetti pianta e trattamento dalla base di dati
-        pianta = Piante.query.get(pianta_id)
-        trattamento = Trattamenti.query.get(trattamento_id)
+    pianta_id = request.form.get('pianta_id')
+    trattamento_id = request.form.get('trattamento_id')
+    data_inizio = request.form.get('data_inizio')
+    data_fine = request.form.get('data_fine')
+    user_id = session['user_id']
 
-        if pianta and trattamento:
-            # Associare il trattamento alla pianta
-            pianta.treatments.append(trattamento)
-            db.session.commit()
-            flash('Trattamento associato alla pianta con successo!', 'success')
-            return redirect(url_for('dashboard_admin'))
-        else:
-            flash('Impossibile associare il trattamento alla pianta.', 'error')
+    nuovo_trattamento = Trattamenti(
+        pianta_id=pianta_id,
+        user_id=user_id,
+        descrizione=trattamento_id,  
+        data_inizio=data_inizio,
+        data_fine=data_fine
+    )
+    db.session.add(nuovo_trattamento)
+    db.session.commit()
 
-    return render_template('associa_pianta_trattamento.html', form=form)
+    return jsonify({'message': 'Associazione eseguita con successo!'})
 
 if __name__ == "__main__":
-   app.run(debug=True)
+    app.run(debug=True)

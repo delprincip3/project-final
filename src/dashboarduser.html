@@ -35,75 +35,56 @@
             </div>
         </div>
 
-        <!-- Piante Section -->
-        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-2xl font-bold mb-4">Le Mie Piante</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full table-auto">
-                    <thead>
-                        <tr>
-                            <th class="px-4 py-2">Nome</th>
-                            <th class="px-4 py-2">Specie</th>
-                            <th class="px-4 py-2">Periodo di Coltivazione</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for pianta in piante %}
-                        <tr>
-                            <td class="border px-4 py-2">{{ pianta.nome }}</td>
-                            <td class="border px-4 py-2">{{ pianta.specie }}</td>
-                            <td class="border px-4 py-2">{{ pianta.periodo_inizio }} - {{ pianta.periodo_fine }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4">
-                <a href="{{ url_for('add_pianta') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Aggiungi Pianta</a>
-            </div>
-        </div>
-
-        <!-- Attività Section -->
-        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-2xl font-bold mb-4">Le Mie Attività</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {% for attivita in attivita %}
-                <div class="bg-gray-100 p-4 rounded-lg shadow">
-                    <h3 class="font-bold">{{ attivita.pianta_nome }}</h3>
-                    <p>{{ attivita.descrizione }}</p>
-                    <p>Dal: {{ attivita.data_inizio }}</p>
-                    <p>Al: {{ attivita.data_fine }}</p>
-                </div>
+     <!-- Associa Pianta e Trattamento Section -->
+<div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+    <h2 class="text-2xl font-bold mb-4">Associa Pianta e Trattamento</h2>
+    <div id="associa-message" class="mb-4" style="display: none;"></div> <!-- Messaggio di successo/necessario -->
+    <form id="associa-form">
+        <div class="mb-4">
+            <label for="pianta_id" class="block text-gray-700">Seleziona Pianta:</label>
+            <select name="pianta_id" id="pianta_id" class="block w-full mt-1">
+                {% for pianta in piante %}
+                <option value="{{ pianta.id }}">{{ pianta.nome }}</option>
                 {% endfor %}
-            </div>
-            <div class="mt-4">
-                <a href="{{ url_for('add_attivita') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Aggiungi Attività</a>
-            </div>
+            </select>
         </div>
+        <div class="mb-4">
+            <label for="trattamento_id" class="block text-gray-700">Seleziona Trattamento:</label>
+            <select name="trattamento_id" id="trattamento_id" class="block w-full mt-1">
+                {% for trattamento in trattamenti %}
+                <option value="{{ trattamento.id }}">{{ trattamento.descrizione }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-4">
+            <label for="data_inizio" class="block text-gray-700">Data Inizio:</label>
+            <input type="date" name="data_inizio" id="data_inizio" class="block w-full mt-1">
+        </div>
+        <div class="mb-4">
+            <label for="data_fine" class="block text-gray-700">Data Fine:</label>
+            <input type="date" name="data_fine" id="data_fine" class="block w-full mt-1">
+        </div>
+        <button type="button" onclick="submitAssociaForm()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Associa</button>
+    </form>
+</div>
 
-        <!-- Associa Pianta e Trattamento Section -->
-        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-2xl font-bold mb-4">Associa Pianta e Trattamento</h2>
-            <form action="{{ url_for('associa_pianta_trattamento') }}" method="post">
-                <div class="mb-4">
-                    <label for="pianta_id" class="block text-gray-700">Seleziona Pianta:</label>
-                    <select name="pianta_id" id="pianta_id" class="block w-full mt-1">
-                        {% for pianta in piante %}
-                        <option value="{{ pianta.id }}">{{ pianta.nome }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label for="trattamento_id" class="block text-gray-700">Seleziona Trattamento:</label>
-                    <select name="trattamento_id" id="trattamento_id" class="block w-full mt-1">
-                        {% for trattamento in trattamenti %}
-                        <option value="{{ trattamento.id }}">{{ trattamento.descrizione }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Associa</button>
-            </form>
-        </div>
+<script>
+    function submitAssociaForm() {
+        const form = document.getElementById('associa-form');
+        const formData = new FormData(form);
+        
+        axios.post('/associa_pianta_trattamento', formData)
+            .then(response => {
+                const messageDiv = document.getElementById('associa-message');
+                messageDiv.textContent = response.data.message;
+                messageDiv.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Errore durante la richiesta di associazione:', error);
+            });
+    }
+</script>
+
 
         <!-- Grafico Avanzamento Giorni Section -->
         <div class="bg-white p-6 rounded-lg shadow-lg mb-6">

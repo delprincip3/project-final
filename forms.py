@@ -1,46 +1,48 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SubmitField, PasswordField
-from wtforms.validators import InputRequired, DataRequired, Email, Length
-from wtforms.fields import DateField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, DateField, TextAreaField
+from wtforms.validators import DataRequired, Email, EqualTo,Optional
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
 
 class RegisterForm(FlaskForm):
-    tipo = SelectField('Tipo', choices=[('user', 'User')], validators=[DataRequired()])
-    nome = StringField('Nome', validators=[DataRequired(), Length(max=100)])
-    cognome = StringField('Cognome', validators=[DataRequired(), Length(max=100)])
-    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=100)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=255)])
+    tipo = SelectField('Tipo', choices=[('Admin', 'Admin'), ('User', 'User')], validators=[DataRequired()])
+    nome = StringField('Nome', validators=[DataRequired()])
+    cognome = StringField('Cognome', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Conferma Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Registrati')
 
 class PianteForm(FlaskForm):
-    nome = StringField('Nome', validators=[DataRequired(), Length(max=100)])
-    specie = StringField('Specie', validators=[DataRequired(), Length(max=100)])
-    submit = SubmitField('Invia')
+    nome = StringField('Nome', validators=[DataRequired()])
+    specie = StringField('Specie', validators=[DataRequired()])
+    submit = SubmitField('Salva')
 
 class TrattamentiForm(FlaskForm):
     pianta_id = SelectField('Pianta', coerce=int, validators=[DataRequired()])
-    descrizione = StringField('Descrizione', validators=[DataRequired()])
-    data_inizio = DateField('Data Inizio', format='%Y-%m-%d', validators=[DataRequired()])
-    data_fine = DateField('Data Fine', format='%Y-%m-%d')
-    submit = SubmitField('Invia')
-
-class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[InputRequired()])
-    password = StringField('Password', validators=[InputRequired()])
+    descrizione = TextAreaField('Descrizione', validators=[DataRequired()])
+    data_inizio = DateField('Data Inizio', validators=[DataRequired()])
+    data_fine = DateField('Data Fine', validators=[Optional()])
+    submit = SubmitField('Salva')
 
 class EliminaPiantaForm(FlaskForm):
-    conferma = SubmitField('Conferma Eliminazione')
+    submit = SubmitField('Elimina')
+
+class EliminaUtenteForm(FlaskForm):
+    submit = SubmitField('Elimina')
 
 class ModificaUtenteForm(FlaskForm):
     tipo = SelectField('Tipo', choices=[('Admin', 'Admin'), ('User', 'User')], validators=[DataRequired()])
     nome = StringField('Nome', validators=[DataRequired()])
     cognome = StringField('Cognome', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Salva Modifiche')
-
-class EliminaUtenteForm(FlaskForm):
-    submit = SubmitField('Conferma Eliminazione')
+    submit = SubmitField('Salva')
 
 class AssociaPiantaTrattamentoForm(FlaskForm):
     pianta_id = SelectField('Pianta', coerce=int, validators=[DataRequired()])
     trattamento_id = SelectField('Trattamento', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Associa')
+
