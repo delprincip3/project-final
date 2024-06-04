@@ -52,14 +52,16 @@ class Trattamenti(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     pianta_id = db.Column(db.Integer, db.ForeignKey('piante.id'), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('utenza.id'), nullable=True)
-    descrizione = db.Column(db.Text, nullable=False)
+    descrizione_id = db.Column(db.Integer, db.ForeignKey('trattamenti_descrizioni.id'), nullable=False)
     data_inizio = db.Column(db.Date, nullable=False)
     data_fine = db.Column(db.Date, nullable=True)
 
-    def __init__(self, pianta_id, user_id, descrizione, data_inizio, data_fine=None):
+    descrizione = db.relationship('TrattamentiDescrizioni', backref='trattamenti')
+
+    def __init__(self, pianta_id, user_id, descrizione_id, data_inizio, data_fine=None):
         self.pianta_id = pianta_id
         self.user_id = user_id
-        self.descrizione = descrizione
+        self.descrizione_id = descrizione_id
         self.data_inizio = data_inizio
         self.data_fine = data_fine
 
@@ -255,10 +257,16 @@ def associa_pianta_trattamento():
     data_fine = request.form.get('data_fine')
     user_id = session['user_id']
 
+    # Recupera la descrizione del trattamento dalla tabella trattamenti_descrizioni
+    trattamento_descrizione = TrattamentiDescrizioni.query.get(trattamento_id)
+
+    if trattamento_descrizione is None:
+        return jsonify({'message': 'ID trattamento non valido!'}), 400
+
     nuovo_trattamento = Trattamenti(
         pianta_id=pianta_id,
         user_id=user_id,
-        descrizione=trattamento_id,  
+        descrizione=trattamento_descrizione.descrizione,  
         data_inizio=data_inizio,
         data_fine=data_fine
     )
@@ -266,6 +274,7 @@ def associa_pianta_trattamento():
     db.session.commit()
 
     return jsonify({'message': 'Associazione eseguita con successo!'})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
