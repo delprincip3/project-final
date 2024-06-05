@@ -4,12 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Associa Trattamento a Pianta</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
 </head>
 <body>
     <div class="container">
         <h1>Associa Trattamento a Pianta</h1>
         <form method="POST" action="{{ url_for('associa_pianta_trattamento') }}">
+            <div class="form-group">
+                <label for="utente">Seleziona un Utente:</label>
+                <select name="utente_id" id="utente" class="form-control">
+                    {% for utente in utenti %}
+                    <option value="{{ utente.id }}">{{ utente.nome }} {{ utente.cognome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div class="form-group">
                 <label for="pianta">Seleziona una Pianta:</label>
                 <select name="pianta_id" id="pianta" class="form-control">
@@ -25,6 +33,14 @@
                     <option value="{{ trattamento.id }}">{{ trattamento.descrizione }}</option>
                     {% endfor %}
                 </select>
+            </div>
+            <div class="form-group">
+                <label for="data_inizio">Data Inizio:</label>
+                <input type="date" name="data_inizio" id="data_inizio" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="data_fine">Data Fine (opzionale):</label>
+                <input type="date" name="data_fine" id="data_fine" class="form-control">
             </div>
             <button type="submit" class="btn btn-primary">Associa Trattamento</button>
         </form>

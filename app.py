@@ -136,6 +136,23 @@ def registrati():
         flash('Account creato con successo!', 'success')
         return redirect(url_for('login'))
     return render_template('registrati.html', form=form)
+@app.route('/registrazione', methods=['GET', 'POST'])
+def registrazione():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        new_user = Utenza(
+            tipo=form.tipo.data,
+            nome=form.nome.data,
+            cognome=form.cognome.data,
+            email=form.email.data,
+            password=form.password.data
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Account creato con successo!', 'success')
+        return redirect(url_for('login'))
+    return render_template('registrazioniadmin.html', form=form)
+
 
 
 @app.route('/modifica_pianta/<int:pianta_id>', methods=['GET', 'POST'])
@@ -181,8 +198,14 @@ def add_attivita():
     form.pianta_id.choices = [(pianta.id, pianta.nome) for pianta in Piante.query.all()]
     
     if form.validate_on_submit():
+        user_id = session.get('user_id')  # Ottieni l'ID utente dalla sessione, se disponibile
+        if not user_id:
+            flash('User ID non trovato. Effettua il login per procedere.', 'error')
+            return redirect(url_for('login'))
+        
         new_trattamento = Trattamenti(
             pianta_id=form.pianta_id.data,
+            user_id=user_id,  # Usa l'ID utente dalla sessione
             descrizione=form.descrizione.data,
             data_inizio=form.data_inizio.data,
             data_fine=form.data_fine.data
@@ -192,6 +215,7 @@ def add_attivita():
         flash('Nuova attività aggiunta con successo!', 'success')
         return redirect(url_for('dashboard_admin'))
     return render_template('addattivita.html', form=form)
+
 
 @app.route('/modifica_utente/<int:user_id>', methods=['GET', 'POST'])
 def modifica_utente(user_id):
@@ -245,28 +269,42 @@ def elimina_trattamento(trattamento_id):
         return redirect(url_for('dashboard_admin'))
     return render_template('eliminatrattamento.html', form=form)
 
-@app.route('/associa_pianta_trattamento', methods=['POST'])
+
+@app.route('/associa_pianta_trattamento', methods=['GET', 'POST'])
 def associa_pianta_trattamento():
-    if 'user_id' not in session:
-        return jsonify({'message': 'Effettua il login per procedere!'}), 401
+    form = AssociaPiantaTrattamentoForm()
 
-    pianta_id = request.form.get('pianta_id')
-    trattamento_id = request.form.get('trattamento_id')
-    data_inizio = request.form.get('data_inizio')
-    data_fine = request.form.get('data_fine')
-    user_id = session['user_id']
+    # Ottenere gli utenti, le piante e i trattamenti dal database
+    utenti = Utenza.query.all()
+    piante = Piante.query.all()
+    trattamenti = Trattamenti.query.all()
 
-    nuovo_trattamento = Trattamenti(
-        pianta_id=pianta_id,
-        user_id=user_id,
-        descrizione=trattamento_id,  
-        data_inizio=data_inizio,
-        data_fine=data_fine
-    )
-    db.session.add(nuovo_trattamento)
-    db.session.commit()
+    if request.method == 'GET':
+        # Popolare le scelte nei campi del form
+        form.utente_id.choices = [(utente.id, f"{utente.nome} {utente.cognome}") for utente in utenti]
+        form.pianta_id.choices = [(pianta.id, pianta.nome) for pianta in piante]
+        form.trattamento_id.choices = [(trattamento.id, trattamento.descrizione) for trattamento in trattamenti]
+        return render_template('associa_pianta_trattamento.html', form=form, utenti=utenti, piante=piante, trattamenti=trattamenti)
 
-    return jsonify({'message': 'Associazione eseguita con successo!'})
+    if form.validate_on_submit():
+        # Gestione della sottomissione del form
+        nuovo_trattamento = Trattamenti(
+            pianta_id=form.pianta_id.data,
+            user_id=form.utente_id.data,
+            descrizione=form.trattamento_id.data,
+            data_inizio=form.data_inizio.data,
+            data_fine=form.data_fine.data
+        )
+        db.session.add(nuovo_trattamento)
+        db.session.commit()
+        flash('Associazione eseguita con successo!', 'success')
+        return redirect(url_for('dashboard_admin'))
+
+    # Ritorno del template anche in caso di errore di validazione del form
+    return render_template('associa_pianta_trattamento.html', form=form, utenti=utenti, piante=piante, trattamenti=trattamenti)
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

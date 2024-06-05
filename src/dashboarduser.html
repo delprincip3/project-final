@@ -35,56 +35,43 @@
             </div>
         </div>
 
-     <!-- Associa Pianta e Trattamento Section -->
-<div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-    <h2 class="text-2xl font-bold mb-4">Associa Pianta e Trattamento</h2>
-    <div id="associa-message" class="mb-4" style="display: none;"></div> <!-- Messaggio di successo/necessario -->
-    <form id="associa-form">
-        <div class="mb-4">
-            <label for="pianta_id" class="block text-gray-700">Seleziona Pianta:</label>
-            <select name="pianta_id" id="pianta_id" class="block w-full mt-1">
-                {% for pianta in piante %}
-                <option value="{{ pianta.id }}">{{ pianta.nome }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="mb-4">
-            <label for="trattamento_id" class="block text-gray-700">Seleziona Trattamento:</label>
-            <select name="trattamento_id" id="trattamento_id" class="block w-full mt-1">
-                {% for trattamento in trattamenti %}
-                <option value="{{ trattamento.id }}">{{ trattamento.descrizione }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="mb-4">
-            <label for="data_inizio" class="block text-gray-700">Data Inizio:</label>
-            <input type="date" name="data_inizio" id="data_inizio" class="block w-full mt-1">
-        </div>
-        <div class="mb-4">
-            <label for="data_fine" class="block text-gray-700">Data Fine:</label>
-            <input type="date" name="data_fine" id="data_fine" class="block w-full mt-1">
-        </div>
-        <button type="button" onclick="submitAssociaForm()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Associa</button>
-    </form>
-</div>
+        <!-- Form Associazione Pianta e Trattamento -->
+        <div class="container">
+            <h1>Dashboard Utente</h1>
+            <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+                <h2 class="text-2xl font-bold mb-4">Associa Pianta e Trattamento</h2>
+                <div id="associa-message" class="mb-4" style="display: none;"></div> <!-- Messaggio di successo/errore -->
+                <form id="associa-form">
+                    <div class="mb-4">
+                        <label for="pianta_id" class="block text-gray-700">Seleziona Pianta:</label>
+                        <select name="pianta_id" id="pianta_id" class="block w-full mt-1">
+                            {% for pianta in piante %}
+                            <option value="{{ pianta.id }}">{{ pianta.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="trattamento_id" class="block text-gray-700">Seleziona Trattamento:</label>
+                        <select name="trattamento_id" id="trattamento_id" class="block w-full mt-1">
+                            {% for trattamento in trattamenti %}
+                            <option value="{{ trattamento.id }}">{{ trattamento.descrizione }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="data_inizio" class="block text-gray-700">Data Inizio:</label>
+                        <input type="date" name="data_inizio" id="data_inizio" class="block w-full mt-1">
+                    </div>
+                    <div class="mb-4">
+                        <label for="data_fine" class="block text-gray-700">Data Fine:</label>
+                        <input type="date" name="data_fine" id="data_fine" class="block w-full mt-1">
+                    </div>
+                    <button type="button" onclick="submitAssociaForm()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Associa</button>
+                </form>
+            </div>
+            <a href="{{ url_for('associa_pianta_trattamento') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Vai alla pagina Associa Pianta e Trattamento</a>
 
-<script>
-    function submitAssociaForm() {
-        const form = document.getElementById('associa-form');
-        const formData = new FormData(form);
-        
-        axios.post('/associa_pianta_trattamento', formData)
-            .then(response => {
-                const messageDiv = document.getElementById('associa-message');
-                messageDiv.textContent = response.data.message;
-                messageDiv.style.display = 'block';
-            })
-            .catch(error => {
-                console.error('Errore durante la richiesta di associazione:', error);
-            });
-    }
-</script>
-
+        </div>
 
         <!-- Grafico Avanzamento Giorni Section -->
         <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
