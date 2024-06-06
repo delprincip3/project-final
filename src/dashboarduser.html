@@ -35,17 +35,51 @@
             </div>
         </div>
 
+        <!-- Bottone per la pagina di associazione -->
+        <div class="mb-6">
+            <a href="{{ url_for('associa_pianta_trattamento') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Vai alla Pagina di Associazione</a>
+        </div>
+
+        <div class="container mb-6">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-4">Crea Piantagione</h2>
+                <form method="POST" action="{{ url_for('crea_piantagione') }}">
+                    <div class="mb-4">
+                        <label for="nome" class="block text-gray-700">Nome Piantagione:</label>
+                        <input type="text" name="nome" id="nome" class="block w-full mt-1" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="descrizione" class="block text-gray-700">Descrizione:</label>
+                        <textarea name="descrizione" id="descrizione" class="block w-full mt-1" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="data_inizio" class="block text-gray-700">Data Inizio:</label>
+                        <input type="date" name="data_inizio" id="data_inizio" class="block w-full mt-1" required>
+                    </div>
+                    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Crea Piantagione</button>
+                </form>
+            </div>
+        </div>
+        
+
         <!-- Form Associazione Pianta e Trattamento -->
         <div class="container">
-            <h1>Dashboard Utente</h1>
             <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
                 <h2 class="text-2xl font-bold mb-4">Associa Pianta e Trattamento</h2>
                 <div id="associa-message" class="mb-4" style="display: none;"></div> <!-- Messaggio di successo/errore -->
-                <form id="associa-form">
+                <form method="POST" action="{{ url_for('dashboard_user') }}">
+                    <div class="mb-4">
+                        <label for="piantagione_id" class="block text-gray-700">Seleziona Piantagione:</label>
+                        <select name="piantagione_id" id="piantagione_id" class="block w-full mt-1">
+                            {% for piantagione in piantagioni %}
+                            <option value="{{ piantagione.id }}">{{ piantagione.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <div class="mb-4">
                         <label for="pianta_id" class="block text-gray-700">Seleziona Pianta:</label>
                         <select name="pianta_id" id="pianta_id" class="block w-full mt-1">
-                            {% for pianta in piante %}
+                            {% for pianta in tutte_le_piante %}
                             <option value="{{ pianta.id }}">{{ pianta.nome }}</option>
                             {% endfor %}
                         </select>
@@ -53,7 +87,7 @@
                     <div class="mb-4">
                         <label for="trattamento_id" class="block text-gray-700">Seleziona Trattamento:</label>
                         <select name="trattamento_id" id="trattamento_id" class="block w-full mt-1">
-                            {% for trattamento in trattamenti %}
+                            {% for trattamento in tutti_i_trattamenti %}
                             <option value="{{ trattamento.id }}">{{ trattamento.descrizione }}</option>
                             {% endfor %}
                         </select>
@@ -66,11 +100,9 @@
                         <label for="data_fine" class="block text-gray-700">Data Fine:</label>
                         <input type="date" name="data_fine" id="data_fine" class="block w-full mt-1">
                     </div>
-                    <button type="button" onclick="submitAssociaForm()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Associa</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Associa</button>
                 </form>
             </div>
-            <a href="{{ url_for('associa_pianta_trattamento') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Vai alla pagina Associa Pianta e Trattamento</a>
-
         </div>
 
         <!-- Grafico Avanzamento Giorni Section -->
@@ -137,19 +169,14 @@
             });
 
             // Example: dynamically add data
-            let days = 0;
-            setInterval(() => {
-                days++;
-                progressChart.data.labels.push(`Giorno ${days}`);
-                progressChart.data.datasets[0].data.push(days);  // Example data
-                progressChart.update();
-            }, 1000);  // Update every second for simulation
+            progressChart.data.labels.push('Day 1', 'Day 2', 'Day 3');
+            progressChart.data.datasets[0].data.push(10, 20, 30);
+            progressChart.update();
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchWeather();
-            setupProgressChart();
-        });
+        // Run setup functions
+        fetchWeather();
+        setupProgressChart();
     </script>
 </body>
 </html>
