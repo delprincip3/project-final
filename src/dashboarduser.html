@@ -35,11 +35,8 @@
             </div>
         </div>
 
-        <!-- Bottone per la pagina di associazione -->
-        <div class="mb-6">
-            <a href="{{ url_for('associa_pianta_trattamento', user_id=utente.id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Vai alla Pagina di Associazione</a>
-
-        </div>
+      
+       
 
         <div class="container mb-6">
             <div class="bg-white p-6 rounded-lg shadow-lg">
@@ -61,50 +58,12 @@
                 </form>
             </div>
         </div>
-        
+        <div class="mb-6">
+            <a href="{{ url_for('associa_pianta_trattamento', user_id=utente.id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Vai alla Pagina di Associazione</a>
 
-        <!-- Form Associazione Pianta e Trattamento -->
-        <div class="container">
-            <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-                <h2 class="text-2xl font-bold mb-4">Associa Pianta e Trattamento</h2>
-                <div id="associa-message" class="mb-4" style="display: none;"></div> <!-- Messaggio di successo/errore -->
-                <form method="POST" action="{{ url_for('dashboard_user') }}">
-                    <div class="mb-4">
-                        <label for="piantagione_id" class="block text-gray-700">Seleziona Piantagione:</label>
-                        <select name="piantagione_id" id="piantagione_id" class="block w-full mt-1">
-                            {% for piantagione in piantagioni %}
-                            <option value="{{ piantagione.id }}">{{ piantagione.nome }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="pianta_id" class="block text-gray-700">Seleziona Pianta:</label>
-                        <select name="pianta_id" id="pianta_id" class="block w-full mt-1">
-                            {% for pianta in tutte_le_piante %}
-                            <option value="{{ pianta.id }}">{{ pianta.nome }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="trattamento_id" class="block text-gray-700">Seleziona Trattamento:</label>
-                        <select name="trattamento_id" id="trattamento_id" class="block w-full mt-1">
-                            {% for trattamento in tutti_i_trattamenti %}
-                            <option value="{{ trattamento.id }}">{{ trattamento.descrizione }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="data_inizio" class="block text-gray-700">Data Inizio:</label>
-                        <input type="date" name="data_inizio" id="data_inizio" class="block w-full mt-1">
-                    </div>
-                    <div class="mb-4">
-                        <label for="data_fine" class="block text-gray-700">Data Fine:</label>
-                        <input type="date" name="data_fine" id="data_fine" class="block w-full mt-1">
-                    </div>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Associa</button>
-                </form>
-            </div>
         </div>
+
+       
 
         <!-- Grafico Avanzamento Giorni Section -->
         <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
