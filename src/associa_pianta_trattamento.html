@@ -1,41 +1,48 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Associa Trattamento a Pianta</title>
+    <title>Associa Pianta Trattamento</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
 </head>
-<body>
-    <div class="container">
-        <h1>Associa Trattamento a Pianta</h1>
-        <form method="POST" action="{{ url_for('associa_pianta_trattamento', user_id=user_id) }}">
-            <input type="hidden" name="user_id" value="{{ user_id }}">
-            <div class="form-group">
-                <label for="pianta">Seleziona una Pianta:</label>
-                <select name="pianta_id" id="pianta" class="form-control">
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-6 text-center">Associa Pianta Trattamento</h1>
+        <form method="POST" class="space-y-4">
+            <div>
+                <label for="piantagione_id" class="block text-sm font-medium text-gray-700">Seleziona Piantagione:</label>
+                <select id="piantagione_id" name="piantagione_id" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">Seleziona una Piantagione</option>
+                    {% for piantagione in piantagioni %}
+                        <option value="{{ piantagione.id }}">{{ piantagione.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="pianta_id" class="block text-sm font-medium text-gray-700">Seleziona Pianta:</label>
+                <select id="pianta_id" name="pianta_id" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">Seleziona una Pianta</option>
                     {% for pianta in piante %}
-                    <option value="{{ pianta.id }}">{{ pianta.nome }}</option>
+                        <option value="{{ pianta.id }}">{{ pianta.nome }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-group">
-                <label for="trattamento">Seleziona un Trattamento:</label>
-                <select name="trattamento_id" id="trattamento" class="form-control">
-                    {% for trattamento in trattamenti %}
-                    <option value="{{ trattamento.id }}">{{ trattamento.descrizione }}</option>
-                    {% endfor %}
-                </select>
+            <div>
+                <label for="descrizione" class="block text-sm font-medium text-gray-700">Descrizione Trattamento:</label>
+                <input type="text" id="descrizione" name="descrizione" required class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
-            <div class="form-group">
-                <label for="data_inizio">Data Inizio:</label>
-                <input type="date" name="data_inizio" id="data_inizio" class="form-control" required>
+            <div>
+                <label for="data_inizio" class="block text-sm font-medium text-gray-700">Data Inizio:</label>
+                <input type="date" id="data_inizio" name="data_inizio" required class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
-            <div class="form-group">
-                <label for="data_fine">Data Fine (opzionale):</label>
-                <input type="date" name="data_fine" id="data_fine" class="form-control">
+            <div>
+                <label for="data_fine" class="block text-sm font-medium text-gray-700">Data Fine:</label>
+                <input type="date" id="data_fine" name="data_fine" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
-            <button type="submit" class="btn btn-primary">Associa Trattamento</button>
+            <div class="flex justify-center">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Associa Trattamento</button>
+            </div>
         </form>
     </div>
 </body>

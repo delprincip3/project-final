@@ -343,37 +343,45 @@ def elimina_trattamento(trattamento_id):
 
 
 
-  # Se stai usando Flask-Login per la gestione dell'accesso
-
-app.route('/associa_pianta_trattamento/<int:user_id>', methods=['GET', 'POST'])
+@app.route('/associa_pianta_trattamento/<int:user_id>', methods=['GET', 'POST'])
 def associa_pianta_trattamento(user_id):
     if 'user_id' not in session or session['user_id'] != user_id:
         flash('Accesso non autorizzato.')
         return redirect(url_for('login'))
+
+    # Ottieni tutte le piantagioni create dall'utente
+    piantagioni = Piantagione.query.filter_by(user_id=user_id).all()
     
-    utente = Utenza.query.get(user_id)
+    # Ottieni tutte le piante dal database
+    piante = Piante.query.all()
 
     if request.method == 'POST':
+        piantagione_id = request.form.get('piantagione_id')
         pianta_id = request.form.get('pianta_id')
-        trattamento_id = request.form.get('trattamento_id')
+        descrizione = request.form.get('descrizione')
         data_inizio = request.form.get('data_inizio')
         data_fine = request.form.get('data_fine')
 
+        # Crea un nuovo trattamento
         nuovo_trattamento = Trattamenti(
+            user_id=user_id,
             pianta_id=pianta_id,
-            descrizione=trattamento_id,
+            descrizione=descrizione,
             data_inizio=data_inizio,
             data_fine=data_fine
         )
-
-        # Assegna l'utente al trattamento utilizzando la relazione definita nel modello Trattamenti
-        nuovo_trattamento.utente = utente
 
         db.session.add(nuovo_trattamento)
         db.session.commit()
 
         flash('Trattamento associato con successo!', 'success')
-        return redirect(url_for('dashboard_user'))
+        return redirect(url_for('dashboard_user', user_id=user_id))
+
+    return render_template('associa_pianta_trattamento.html', piantagioni=piantagioni, piante=piante)
+
+
+
+
 
 @app.route('/crea_piantagione', methods=['GET', 'POST'])
 def crea_piantagione():

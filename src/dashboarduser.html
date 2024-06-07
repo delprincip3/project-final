@@ -37,7 +37,8 @@
 
         <!-- Bottone per la pagina di associazione -->
         <div class="mb-6">
-            <a href="{{ url_for('associa_pianta_trattamento') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Vai alla Pagina di Associazione</a>
+            <a href="{{ url_for('associa_pianta_trattamento', user_id=utente.id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Vai alla Pagina di Associazione</a>
+
         </div>
 
         <div class="container mb-6">
