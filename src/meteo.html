@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsione Meteo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Previsione Meteo per Latitudine: 41.7863, Longitudine: 15.4439</h1>
+    </header>
+    <main>
+        <h2>Previsione Oraria</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ora</th>
+                    <th>Temperatura (°C)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for date, temperature in hourly_dataframe.itertuples(index=False) %}
+                    <tr>
+                        <td>{{ date }}</td>
+                        <td>{{ temperature }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

@@ -87,20 +87,24 @@
         <p>Copyright © 2024 - All rights reserved by delprincip3</p>
     </footer>
 
-    <!-- Scripts -->
     <script>
         // Fetch weather data from API and update DOM
         function fetchWeather() {
-            axios.get('/api/weather')  // Placeholder URL, replace with actual API endpoint
+            axios.get('/api/weather')
                 .then(response => {
                     const weatherData = response.data;
-                    document.getElementById('weather-description').textContent = weatherData.description;
-                    document.getElementById('temperature').textContent = `Temperatura: ${weatherData.temperature}°C`;
+                    const temperature = weatherData.temperature_2m[0];  // Example of using the first temperature value
+                    document.getElementById('weather-description').textContent = "Temperature attuale:";
+                    document.getElementById('temperature').textContent = `${temperature}°C`;
                 })
                 .catch(error => {
                     console.error('Error fetching weather data:', error);
                 });
         }
+
+        // Run setup functions
+        fetchWeather();
+    
 
         // Simulate days progression with Chart.js
         function setupProgressChart() {
