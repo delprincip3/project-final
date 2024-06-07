@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elimina Piantagione</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+</head>
+<body class="bg-gray-100">
+    <header class="bg-green-700 shadow-md p-4">
+        <!-- Intestazione simile alle altre pagine -->
+        <!-- ... -->
+    </header>
+
+    <div class="min-h-screen flex flex-col container mx-auto p-6">
+        <!-- Main content -->
+        <main>
+            <h1 class="text-3xl font-semibold mb-4">Elimina Piantagione</h1>
+            <p>Sei sicuro di voler eliminare questa piantagione?</p>
+            <form id="elimina-piantagione-form" method="POST">
+                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg">Elimina</button>
+                <!-- Assicurati di includere un campo nascosto per l'ID della piantagione da eliminare -->
+            </form>
+        </main>
+    </div>
+
+    <!-- Script per gestire l'evento submit del modulo -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('elimina-piantagione-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Evita il comportamento predefinito di invio del modulo
+                // Esegui qui la logica per l'eliminazione della piantagione, ad esempio tramite AJAX o altro
+                // Dopo l'eliminazione, puoi reindirizzare l'utente a un'altra pagina o visualizzare un messaggio di successo
+            });
+        });
+    </script>
+</body>
+</html>

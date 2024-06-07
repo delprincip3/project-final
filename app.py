@@ -129,8 +129,14 @@ def login():
 def dashboard_admin():
     users = Utenza.query.all()
     piante = Piante.query.all()
-    trattamenti = Trattamenti.query.all() 
-    return render_template('dashboardadmin.html', users=users, piante=piante, trattamenti=trattamenti)
+    trattamenti = Trattamenti.query.all()
+    piantagioni = Piantagione.query.all()
+
+    for trattamento in trattamenti:
+        print(f"Trattamento ID: {trattamento.id}, Pianta: {trattamento.pianta.nome}")
+
+    return render_template('dashboardadmin.html', users=users, piante=piante, trattamenti=trattamenti, piantagioni=piantagioni)
+
 
 @app.route('/dashboarduser', methods=['GET', 'POST'])
 def dashboard_user():
@@ -406,6 +412,32 @@ def crea_piantagione():
         return redirect(url_for('dashboard_user'))
     
     return render_template('crea_piantagione.html')
+
+@app.route('/modifica_piantagione/<int:piantagione_id>', methods=['GET', 'POST'])
+def modifica_piantagione(piantagione_id):
+    if request.method == 'POST':
+        # Logica per la modifica della piantagione
+        # Qui dovresti gestire la richiesta POST e aggiornare i dati della piantagione nel database
+        return 'Piantagione modificata con successo!'
+    else:
+        # Recupera i dettagli della piantagione dal database usando piantagione_id
+        piantagione = Piantagione.query.get(piantagione_id)
+        return render_template('modifica_piantagione.html', piantagione=piantagione)
+
+# Route per la pagina di eliminazione piantagione
+@app.route('/elimina_piantagione/<int:piantagione_id>', methods=['POST'])
+def elimina_piantagione(piantagione_id):
+    # Trova la piantagione dal database utilizzando l'ID fornito
+    piantagione = Piantagione.query.get_or_404(piantagione_id)
+    # Elimina la piantagione dal database
+    db.session.delete(piantagione)
+    db.session.commit()
+    # Reindirizza l'utente alla dashboard dell'amministratore
+    return redirect(url_for('dashboard_admin'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 
 

@@ -41,7 +41,6 @@
             </nav>
         </div>
         <!-- Navigation Menu (Mobile) -->
-      
         <div id="mobile-menu" class="hidden lg:hidden">
             <nav class="px-2 pt-2 pb-4 space-y-1">
                 <a href="{{ url_for('add_pianta') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Aggiungi Pianta</a>
@@ -87,34 +86,42 @@
                 </table>
             </div>
             <div class="bg-white rounded-lg shadow p-8 mb-6 overflow-x-auto text-center">
-                <h2 class="text-2xl font-semibold mb-4 text-center">Piante</h2>
+                <h2 class="text-2xl font-semibold mb-4 text-center">Piantagioni</h2>
                 <table class="min-w-full bg-white border border-gray-200">
                     <thead>
                         <tr>
                             <th class="px-4 py-2 bg-gray-200 text-gray-600">ID</th>
                             <th class="px-4 py-2 bg-gray-200 text-gray-600">Nome</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Specie</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Descrizione</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Data Inizio</th>
+                            <th class="px-4py-2 bg-gray-200 text-gray-600">Data Fine</th>
+                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Utente</th>
                             <th class="px-4 py-2 bg-gray-200 text-gray-600">Azioni</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for pianta in piante %}
+                        {% for piantagione in piantagioni %}
                         <tr class="border-b">
-                            <td class="px-6 py-4">{{ pianta.id }}</td>
-                            <td class="px-6 py-4">{{ pianta.nome }}</td>
-                            <td class="px-6 py-4">{{ pianta.specie }}</td>
+                            <td class="px-6 py-4">{{ piantagione.id }}</td>
+                            <td class="px-6 py-4">{{ piantagione.nome }}</td>
+                            <td class="px-6 py-4">{{ piantagione.descrizione }}</td>
+                            <td class="px-6 py-4">{{ piantagione.data_inizio }}</td>
+                            <td class="px-6 py-4">{{ piantagione.data_fine }}</td>
                             <td class="px-6 py-4">
-                                <a href="{{ url_for('modifica_pianta', pianta_id=pianta.id) }}" class="text-blue-500 hover:underline">Modifica</a>
-                                <a href="{{ url_for('elimina_pianta', pianta_id=pianta.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
+                                <button class="modifica-piantagione-btn text-blue-500 hover:underline">Modifica</button>
+                                <a href="{{ url_for('elimina_piantagione', piantagione_id=piantagione.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Sezione Trattamenti -->
             <div class="bg-white rounded-lg shadow p-8 mb-6 overflow-x-auto text-center">
                 <h2 class="text-2xl font-semibold mb-4 text-center">Trattamenti</h2>
                 <table class="min-w-full bg-white border border-gray-200">
+                    <!-- Intestazione tabella -->
                     <thead>
                         <tr>
                             <th class="px-4 py-2 bg-gray-200 text-gray-600">ID</th>
@@ -125,29 +132,77 @@
                             <th class="px-4 py-2 bg-gray-200 text-gray-600">Azioni</th>
                         </tr>
                     </thead>
+                    <!-- Corpo tabella -->
                     <tbody>
                         {% for trattamento in trattamenti %}
                         <tr class="border-b">
                             <td class="px-6 py-4">{{ trattamento.id }}</td>
-                            <td class="px-6 py-4">{{ trattamento.pianta_id }}</td>
+                            <td class="px-6 py-4">{{ trattamento.pianta.nome }}</td>
                             <td class="px-6 py-4">{{ trattamento.descrizione }}</td>
                             <td class="px-6 py-4">{{ trattamento.data_inizio }}</td>
                             <td class="px-6 py-4">{{ trattamento.data_fine }}</td>
-                            <td class="px-6 py-4">
-                                <a href="{{ url_for('modifica_trattamento', trattamento_id=trattamento.id) }}" class="text-blue-500 hover:underline">Modifica</a>
-                                <a href="{{ url_for('elimina_trattamento', trattamento_id=trattamento.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-green-600 text-white p-4 text-center">
-        <p>&copy; 2024 - All rights reserved by delprincip3</p>
-    </footer>
-</body>
-</html>
+                            <td class="px-6 py-4"><a href="{{ url_for('modifica_trattamento', trattamento_id=trattamento.id) }}" class="text-blue-500 hover:underline">Modifica</a>
+                                                 <a href="{{ url_for('elimina_trattamento', trattamento_id=trattamento.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </main>
+                                </div>
+                            </body>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    // Aggiungi un gestore di eventi click a tutti i pulsanti "Modifica"
+                                    document.querySelectorAll('.modifica-piantagione-btn').forEach(button => {
+                                        button.addEventListener('click', function() {
+                                            // Recupera i dettagli della piantagione dalla riga della tabella
+                                            const row = button.closest('tr');
+                                            const piantagioneId = row.dataset.piantagioneId;
+                                            const nome = row.cells[1].innerText; // Modifica l'indice in base alla posizione della colonna
+                                            const descrizione = row.cells[2].innerText; // Modifica l'indice in base alla posizione della colonna
+                                            // Popola il modulo di modifica con i dettagli della piantagione
+                                            document.getElementById('modifica-piantagione-id').value = piantagioneId;
+                                            document.getElementById('modifica-piantagione-nome').value = nome;
+                                            document.getElementById('modifica-piantagione-descrizione').value = descrizione;
+                                            // Mostra il modulo di modifica
+                                            document.getElementById('modifica-piantagione-form').style.display = 'block';
+                                        });
+                                    });
+                            
+                                    // Aggiungi un gestore di eventi submit al modulo di modifica
+                                    document.getElementById('modifica-piantagione-form').addEventListener('submit', function(event) {
+                                        event.preventDefault(); // Evita il comportamento predefinito del modulo
+                                        // Recupera i dati dal modulo di modifica
+                                        const piantagioneId = document.getElementById('modifica-piantagione-id').value;
+                                        const nome = document.getElementById('modifica-piantagione-nome').value;
+                                        const descrizione = document.getElementById('modifica-piantagione-descrizione').value;
+                                        // Invia i dati al server tramite una richiesta AJAX
+                                        fetch(`/modifica_piantagione/${piantagioneId}`, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ nome: nome, descrizione: descrizione })
+                                        })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                // Aggiorna la tabella delle piantagioni dopo la modifica
+                                                // Questo potrebbe includere ricaricare i dati della tabella o aggiornare solo la riga modificata
+                                                // Implementa questo passaggio a seconda delle tue esigenze
+                                                // Ad esempio, potresti chiamare una funzione che aggiorna la tabella o nasconde il modulo di modifica
+                                                alert('Piantagione modificata con successo!');
+                                            } else {
+                                                throw new Error('Errore durante la modifica della piantagione');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Errore:', error);
+                                        });
+                                    });
+                                });
+                            </script>
+                            
+                            
+                            </html>

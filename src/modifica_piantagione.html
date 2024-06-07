@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica Piantagione</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+</head>
+<body class="bg-gray-100">
+    <header class="bg-green-700 shadow-md p-4">
+        <!-- Intestazione simile alle altre pagine -->
+        <!-- ... -->
+    </header>
+
+    <div class="min-h-screen flex flex-col container mx-auto p-6">
+        <!-- Main content -->
+        <main>
+            <h1 class="text-3xl font-semibold mb-4">Modifica Piantagione</h1>
+            <form id="modifica-piantagione-form" method="POST">
+                <!-- Campi del modulo per la modifica della piantagione -->
+                <!-- Assicurati di includere campi per modificare nome, descrizione, data_inizio, data_fine, ecc. -->
+            </form>
+        </main>
+    </div>
+
+    <!-- Script per gestire l'evento submit del modulo -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('modifica-piantagione-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Evita il comportamento predefinito di invio del modulo
+                // Esegui qui la logica per l'invio del modulo, ad esempio tramite AJAX o altro
+                // Nascondi il modulo di modifica
+                document.getElementById('modifica-piantagione-form').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
