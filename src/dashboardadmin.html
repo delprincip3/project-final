@@ -3,206 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-
-            mobileMenuButton.addEventListener('click', function () {
-                mobileMenu.classList.toggle('hidden');
-            });
-        });
-    </script>
+    <title>Dashboard Admin - Ortoplan</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@days-ui/days-ui@0.0.5/dist/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body class="bg-gray-100">
-    <header class="bg-green-700 shadow-md p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <!-- Logo/Title -->
-            <div class="flex items-center space-x-2">
-                <img src="../src/logo.jpg" alt="Ortoplan Logo" class="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 rounded-full">
-                <span class="text-xl font-bold text-white">Admin Dashboard</span>
-            </div>
-            <!-- Mobile Menu Button -->
-            <div class="block lg:hidden">
-                <button id="mobile-menu-button" class="text-green-100 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-            </div>
-            <!-- Navigation Menu (Desktop) -->
-            <nav class="hidden lg:flex space-x-4">
-                <a href="{{ url_for('add_pianta') }}" class="text-white hover:underline">Aggiungi Pianta</a>
-                <a href="{{ url_for('add_attivita') }}" class="text-white hover:underline">Aggiungi Attività</a>
-                <a href="{{ url_for('registrazione') }}" class="text-white hover:underline">Crea Utente</a>
-                <a href="{{ url_for('login') }}" class="bg-green-400 text-white px-4 py-2 rounded-lg hover:bg-green-700">Logout</a>
-            </nav>
-        </div>
-        <!-- Navigation Menu (Mobile) -->
-        <div id="mobile-menu" class="hidden lg:hidden">
-            <nav class="px-2 pt-2 pb-4 space-y-1">
-                <a href="{{ url_for('add_pianta') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Aggiungi Pianta</a>
-                <a href="{{ url_for('add_attivita') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Aggiungi attività</a>
-                <a href="{{ url_for('registrazione') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-100">Crea Utente</a>
-                <a href="{{ url_for('login') }}" class="block px-3 py-2 mt-2 rounded-lg text-center bg-green-600 text-white hover:bg-green-700">Logout</a>
-            </nav>
-        </div>
+
+    <!-- Header -->
+    <header class="bg-green-700 text-white py-4 px-6 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Benvenuto, Admin {{ utente.nome }} {{ utente.cognome }}</h1>
+        <nav>
+            <a href="{{ url_for('index') }}" class="text-white hover:underline">Home</a>
+            <a href="{{ url_for('login') }}" class="text-white hover:underline">Logout</a>
+        </nav>
     </header>
 
-    <div class="min-h-screen flex flex-col container mx-auto p-6">
-        <!-- Main content -->
-        <main>
-            <h1 class="text-3xl font-semibold mb-4">Dashboard Admin</h1>
-            <div class="bg-white rounded-lg shadow p-6 mb-6 overflow-x-auto text-center">
-                <h2 class="text-2xl font-semibold mb-4">Utenti</h2>
-                <table class="min-w-full bg-white border border-gray-200">
-                    <thead>
-                        <tr>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">ID</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Nome</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Cognome</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Email</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Tipo</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Azioni</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in users %}
-                        <tr class="border-b">
-                            <td class="px-4 py-2">{{ user.id }}</td>
-                            <td class="px-4 py-2">{{ user.nome }}</td>
-                            <td class="px-4 py-2">{{ user.cognome }}</td>
-                            <td class="px-4 py-2">{{ user.email }}</td>
-                            <td class="px-4 py-2">{{ user.tipo }}</td>
-                            <td class="px-4 py-2">
-                                <a href="{{ url_for('modifica_utente', user_id=user.id) }}" class="text-blue-500 hover:underline">Modifica</a>
-                                <a href="{{ url_for('elimina_utente', user_id=user.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="bg-white rounded-lg shadow p-8 mb-6 overflow-x-auto text-center">
-                <h2 class="text-2xl font-semibold mb-4 text-center">Piantagioni</h2>
-                <table class="min-w-full bg-white border border-gray-200">
-                    <thead>
-                        <tr>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">ID</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Nome</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Descrizione</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Data Inizio</th>
-                            <th class="px-4py-2 bg-gray-200 text-gray-600">Data Fine</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Utente</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Azioni</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for piantagione in piantagioni %}
-                        <tr class="border-b">
-                            <td class="px-6 py-4">{{ piantagione.id }}</td>
-                            <td class="px-6 py-4">{{ piantagione.nome }}</td>
-                            <td class="px-6 py-4">{{ piantagione.descrizione }}</td>
-                            <td class="px-6 py-4">{{ piantagione.data_inizio }}</td>
-                            <td class="px-6 py-4">{{ piantagione.data_fine }}</td>
-                            <td class="px-6 py-4">
-                                <button class="modifica-piantagione-btn text-blue-500 hover:underline">Modifica</button>
-                                <a href="{{ url_for('elimina_piantagione', piantagione_id=piantagione.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Sezione Trattamenti -->
-            <div class="bg-white rounded-lg shadow p-8 mb-6 overflow-x-auto text-center">
-                <h2 class="text-2xl font-semibold mb-4 text-center">Trattamenti</h2>
-                <table class="min-w-full bg-white border border-gray-200">
-                    <!-- Intestazione tabella -->
-                    <thead>
-                        <tr>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">ID</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Pianta</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Descrizione</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Data Inizio</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Data Fine</th>
-                            <th class="px-4 py-2 bg-gray-200 text-gray-600">Azioni</th>
-                        </tr>
-                    </thead>
-                    <!-- Corpo tabella -->
-                    <tbody>
-                        {% for trattamento in trattamenti %}
-                        <tr class="border-b">
-                            <td class="px-6 py-4">{{ trattamento.id }}</td>
-                            <td class="px-6 py-4">{{ trattamento.pianta.nome }}</td>
-                            <td class="px-6 py-4">{{ trattamento.descrizione }}</td>
-                            <td class="px-6 py-4">{{ trattamento.data_inizio }}</td>
-                            <td class="px-6 py-4">{{ trattamento.data_fine }}</td>
-                            <td class="px-6 py-4"><a href="{{ url_for('modifica_trattamento', trattamento_id=trattamento.id) }}" class="text-blue-500 hover:underline">Modifica</a>
-                                                 <a href="{{ url_for('elimina_trattamento', trattamento_id=trattamento.id) }}" class="text-red-500 hover:underline ml-2">Elimina</a>
-                                                        </td>
-                                                    </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </main>
-                                </div>
-                            </body>
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    // Aggiungi un gestore di eventi click a tutti i pulsanti "Modifica"
-                                    document.querySelectorAll('.modifica-piantagione-btn').forEach(button => {
-                                        button.addEventListener('click', function() {
-                                            // Recupera i dettagli della piantagione dalla riga della tabella
-                                            const row = button.closest('tr');
-                                            const piantagioneId = row.dataset.piantagioneId;
-                                            const nome = row.cells[1].innerText; // Modifica l'indice in base alla posizione della colonna
-                                            const descrizione = row.cells[2].innerText; // Modifica l'indice in base alla posizione della colonna
-                                            // Popola il modulo di modifica con i dettagli della piantagione
-                                            document.getElementById('modifica-piantagione-id').value = piantagioneId;
-                                            document.getElementById('modifica-piantagione-nome').value = nome;
-                                            document.getElementById('modifica-piantagione-descrizione').value = descrizione;
-                                            // Mostra il modulo di modifica
-                                            document.getElementById('modifica-piantagione-form').style.display = 'block';
-                                        });
-                                    });
-                            
-                                    // Aggiungi un gestore di eventi submit al modulo di modifica
-                                    document.getElementById('modifica-piantagione-form').addEventListener('submit', function(event) {
-                                        event.preventDefault(); // Evita il comportamento predefinito del modulo
-                                        // Recupera i dati dal modulo di modifica
-                                        const piantagioneId = document.getElementById('modifica-piantagione-id').value;
-                                        const nome = document.getElementById('modifica-piantagione-nome').value;
-                                        const descrizione = document.getElementById('modifica-piantagione-descrizione').value;
-                                        // Invia i dati al server tramite una richiesta AJAX
-                                        fetch(`/modifica_piantagione/${piantagioneId}`, {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({ nome: nome, descrizione: descrizione })
-                                        })
-                                        .then(response => {
-                                            if (response.ok) {
-                                                // Aggiorna la tabella delle piantagioni dopo la modifica
-                                                // Questo potrebbe includere ricaricare i dati della tabella o aggiornare solo la riga modificata
-                                                // Implementa questo passaggio a seconda delle tue esigenze
-                                                // Ad esempio, potresti chiamare una funzione che aggiorna la tabella o nasconde il modulo di modifica
-                                                alert('Piantagione modificata con successo!');
-                                            } else {
-                                                throw new Error('Errore durante la modifica della piantagione');
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.error('Errore:', error);
-                                        });
-                                    });
-                                });
-                            </script>
-                            
-                            
-                            </html>
+    <!-- Main content -->
+    <div class="container mx-auto px-4 py-8">
+
+        <!-- User List Section -->
+        <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 class="text-xl font-semibold mb-4">Utenti</h2>
+            <ul>
+                {% for user in users %}
+                    <li class="flex items-center justify-between py-2 border-b">
+                        <span>{{ user.nome }} {{ user.cognome }} (ID: {{ user.id }})</span>
+                        <div class="space-x-2">
+                            <button onclick="editUser('{{ user.id }}')" class="btn btn-sm btn-blue">Modifica</button>
+                            <button onclick="deleteUser('{{ user.id }}')" class="btn btn-sm btn-red">Elimina</button>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Piantagioni Section -->
+        <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 class="text-xl font-semibold mb-4">Piantagioni</h2>
+            <ul>
+                {% for piantagione in piantagioni %}
+                    <li class="flex items-center justify-between py-2 border-b">
+                        <span>{{ piantagione.nome }} - {{ piantagione.descrizione }}</span>
+                        <div class="space-x-2">
+                            <button onclick="editPiantagione('{{ piantagione.id }}')" class="btn btn-sm btn-blue">Modifica</button>
+                            <button onclick="deletePiantagione('{{ piantagione.id }}')" class="btn btn-sm btn-red">Elimina</button>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Trattamenti Section -->
+        <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 class="text-xl font-semibold mb-4">Trattamenti</h2>
+            <ul>
+                {% for trattamento in trattamenti %}
+                    <li class="flex items-center justify-between py-2 border-b">
+                        <span>{{ trattamento.descrizione }} - {{ trattamento.data_inizio }} - {{ trattamento.data_fine }}</span>
+                        <div class="space-x-2">
+                            <button onclick="editTrattamento('{{ trattamento.id }}')" class="btn btn-sm btn-blue">Modifica</button>
+                            <button onclick="deleteTrattamento('{{ trattamento.id }}')" class="btn btn-sm btn-red">Elimina</button>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Notifiche Section -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Notifiche</h2>
+            <ul id="notifications" class="list-disc list-inside">
+                {% for notifica in notifiche %}
+                    <li>{{ notifica }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-green-600 text-white py-4 px-6 text-center">
+        <p class="text-sm">Copyright © 2024 - All rights reserved by delprincip3</p>
+    </footer>
+
+    <script>
+        // Funzioni per gestire modifiche ed eliminazioni
+        function editUser(userId) {
+            const nome = prompt("Inserisci il nuovo nome:");
+            const cognome = prompt("Inserisci il nuovo cognome:");
+            const email = prompt("Inserisci la nuova email:");
+            const password = prompt("Inserisci la nuova password:")
+
+            if (nome && cognome && email && password) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/dashboardadmin';
+
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'edit_user';
+                form.appendChild(actionInput);
+
+                const userIdInput = document.createElement('input');
+                userIdInput.type = 'hidden';
+                userIdInput.name = 'user_id';
+                userIdInput.value = userId;
+                form.appendChild(userIdInput);
+
+                const nomeInput = document.createElement('input');
+                nomeInput.type = 'hidden';
+                nomeInput.name = 'nome';
+                nomeInput.value = nome;
+                form.appendChild(nomeInput);
+
+                const cognomeInput = document.createElement('input');
+                cognomeInput.type = 'hidden';
+                cognomeInput.name = 'cognome';
+                cognomeInput.value = cognome;
+                form.appendChild(cognomeInput);
+
+                const emailInput = document.createElement('input');
+                emailInput.type = 'hidden';
+                emailInput.name = 'email';
+                emailInput.value = email;
+                form.appendChild(emailInput);
+                
+                const passwordInput = document.createElement('input');
+                passwordInput.type = 'hidden';
+                passwordInput.name = 'password';
+                passwordInput.value = password;
+                form.appendChild(passwordInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function deleteUser(userId) {
+            if (confirm("Sei sicuro di voler eliminare questo utente?")) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/dashboardadmin';
+
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'delete_user';
+                form.appendChild(actionInput);
+
+                const userIdInput = document.createElement('input');
+                userIdInput.type = 'hidden';
+                userIdInput.name = 'user_id';
+                userIdInput.value = userId;
+                form.appendChild(userIdInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function editPiantagione(piantagioneId) {
+            const nome = prompt("Inserisci il nuovo nome:");
+            const descrizione = prompt("Inserisci la nuova descrizione:");
+
+            if (nome && descrizione) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/dashboardadmin';
+
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'edit_piantagione';
+                form.appendChild(actionInput);
+
+                const piantagioneIdInput = document.createElement('input');
+                piantagioneIdInput.type = 'hidden';
+                piantagioneIdInput.name = 'piantagione_id';
+                piantagioneIdInput.value = piantagioneId;
+                form.appendChild(piantagioneIdInput);
+
+                const nomeInput = document.createElement('input');
+                nomeInput.type = 'hidden';
+                nomeInput.name = 'nome';
+                nomeInput.value = nome;
+                form.appendChild(nomeInput);
+
+                const descrizioneInput = document.createElement('input');
+                descrizioneInput.type = 'hidden';
+                descrizioneInput.name = 'descrizione';
+                descrizioneInput.value = descrizione;
+                form.appendChild(descrizioneInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function deletePiantagione(piantagioneId) {
+            if (confirm("Sei sicuro di voler eliminare questa piantagione?")) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/dashboardadmin';
+
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'delete_piantagione';
+                form.appendChild(actionInput);
+
+                const piantagioneIdInput = document.createElement('input');
+                piantagioneIdInput.type = 'hidden';
+                piantagioneIdInput.name = 'piantagione_id';
+                piantagioneIdInput.value = piantagioneId;
+                form.appendChild(piantagioneIdInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function editTrattamento(trattamentoId) {
+            const descrizione = prompt("Inserisci la nuova descrizione:");
+            const dataInizio = prompt("Inserisci la nuova data di inizio (YYYY-MM-DD):");
+            const dataFine = prompt("Inserisci la nuova data di fine (YYYY-MM-DD):");
+
+            if (descrizione && dataInizio && dataFine) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/dashboardadmin';
+
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'edit_trattamento';
+                form.appendChild(actionInput);
+
+                const trattamentoIdInput = document.createElement('input');
+                trattamentoIdInput.type = 'hidden';
+                trattamentoIdInput.name = 'trattamento_id';
+                trattamentoIdInput.value = trattamentoId;
+                form.appendChild(trattamentoIdInput);
+
+                const descrizioneInput = document.createElement('input');
+                descrizioneInput.type = 'hidden';
+                descrizioneInput.name = 'descrizione';
+                descrizioneInput.value = descrizione;
+                form.appendChild(descrizioneInput);
+
+                const dataInizioInput = document.createElement('input');
+                dataInizioInput.type = 'hidden';
+                dataInizioInput.name = 'data_inizio';
+                dataInizioInput.value = dataInizio;
+                form.appendChild(dataInizioInput);
+
+                const dataFineInput = document.createElement('input');
+                dataFineInput.type = 'hidden';
+                dataFineInput.name = 'data_fine';
+                dataFineInput.value = dataFine;
+                form.appendChild(dataFineInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function deleteTrattamento(trattamentoId) {
+            if (confirm("Sei sicuro di voler eliminare questo trattamento?")) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/dashboardadmin';
+
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'delete_trattamento';
+                form.appendChild(actionInput);
+
+                const trattamentoIdInput = document.createElement('input');
+                trattamentoIdInput.type = 'hidden';
+                trattamentoIdInput.name = 'trattamento_id';
+                trattamentoIdInput.value = trattamentoId;
+                form.appendChild(trattamentoIdInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>

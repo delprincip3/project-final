@@ -53,7 +53,7 @@ hourly_data["temperature_2m_previous_day4"] = hourly_temperature_2m_previous_day
 hourly_data["temperature_2m_previous_day5"] = hourly_temperature_2m_previous_day5
 
 hourly_dataframe = pd.DataFrame(data = hourly_data)
-print(hourly_dataframe)
+
 
 
 app = Flask(__name__, template_folder='src', static_folder='src')
@@ -174,17 +174,91 @@ def login():
     return render_template('login.html', form=form)
 
 
-@app.route('/dashboardadmin')
+@app.route('/dashboardadmin', methods=['GET', 'POST'])
 def dashboard_admin():
-    users = Utenza.query.all()
-    piante = Piante.query.all()
-    trattamenti = Trattamenti.query.all()
-    piantagioni = Piantagione.query.all()
+    if 'user_id' not in session:
+        flash('Effettua il login per accedere a questa pagina.')
+        return redirect(url_for('login'))
+    
+    utente = Utenza.query.get(session['user_id'])
 
-    for trattamento in trattamenti:
-        print(f"Trattamento ID: {trattamento.id}, Pianta: {trattamento.pianta.nome}")
+    # Verifica se l'utente è un admin
+    if utente and utente.tipo == 'admin':
+        # Recupera tutti gli utenti
+        users = Utenza.query.all()
 
-    return render_template('dashboardadmin.html', users=users, piante=piante, trattamenti=trattamenti, piantagioni=piantagioni)
+        # Recupera tutte le piantagioni, piante e trattamenti
+        piantagioni = Piantagione.query.all()
+        piante = Piante.query.all()
+        trattamenti = Trattamenti.query.all()
+        
+       
+        if request.method == 'POST':
+            if 'action' in request.form:
+                action = request.form['action']
+                if action == 'edit_user':
+                    user_id = request.form.get('user_id')
+                    user = Utenza.query.get(user_id)
+                    if user:
+                        user.nome = request.form.get('nome')
+                        user.cognome = request.form.get('cognome')
+                        user.email = request.form.get('email')
+                        db.session.commit()
+                        flash('Utente aggiornato con successo!', 'success')
+                elif action == 'delete_user':
+                    user_id = request.form.get('user_id')
+                    user = Utenza.query.get(user_id)
+                    if user:
+                        db.session.delete(user)
+                        db.session.commit()
+                        flash('Utente eliminato con successo!', 'success')
+                elif action == 'edit_piantagione':
+                    piantagione_id = request.form.get('piantagione_id')
+                    piantagione = Piantagione.query.get(piantagione_id)
+                    if piantagione:
+                        piantagione.nome = request.form.get('nome')
+                        piantagione.descrizione = request.form.get('descrizione')
+                        db.session.commit()
+                        flash('Piantagione aggiornata con successo!', 'success')
+                elif action == 'delete_piantagione':
+                    piantagione_id = request.form.get('piantagione_id')
+                    piantagione = Piantagione.query.get(piantagione_id)
+                    if piantagione:
+                        db.session.delete(piantagione)
+                        db.session.commit()
+                        flash('Piantagione eliminata con successo!', 'success')
+                elif action == 'edit_trattamento':
+                    trattamento_id = request.form.get('trattamento_id')
+                    trattamento = Trattamenti.query.get(trattamento_id)
+                    if trattamento:
+                        trattamento.descrizione = request.form.get('descrizione')
+                        trattamento.data_inizio = request.form.get('data_inizio')
+                        trattamento.data_fine = request.form.get('data_fine')
+                        db.session.commit()
+                        flash('Trattamento aggiornato con successo!', 'success')
+                elif action == 'delete_trattamento':
+                    trattamento_id = request.form.get('trattamento_id')
+                    trattamento = Trattamenti.query.get(trattamento_id)
+                    if trattamento:
+                        db.session.delete(trattamento)
+                        db.session.commit()
+                        flash('Trattamento eliminato con successo!', 'success')
+
+            return redirect(url_for('dashboard_admin'))
+
+        return render_template('dashboardadmin.html', 
+                               utente=utente, 
+                               trattamenti=trattamenti, 
+                               tutte_le_piante=piante, 
+                               tutti_i_trattamenti=trattamenti, 
+                               piante=piante, 
+                               piantagioni=piantagioni,
+                               users=users)
+    else:
+        flash('Accesso non autorizzato!')
+        return redirect(url_for('index'))
+
+
 
 
 @app.route('/dashboarduser', methods=['GET', 'POST'])
@@ -411,7 +485,7 @@ def associa_pianta_trattamento(user_id):
     piante = Piante.query.all()
 
     if request.method == 'POST':
-        piantagione_id = request.form.get('piantagione_id')
+        #piantagione_id = request.form.get('piantagione_id')
         pianta_id = request.form.get('pianta_id')
         descrizione = request.form.get('descrizione')
         data_inizio = request.form.get('data_inizio')
@@ -420,6 +494,7 @@ def associa_pianta_trattamento(user_id):
         # Crea un nuovo trattamento
         nuovo_trattamento = Trattamenti(
             user_id=user_id,
+            #piantagione_id = piantagione_id,
             pianta_id=pianta_id,
             descrizione=descrizione,
             data_inizio=data_inizio,
@@ -485,10 +560,60 @@ def elimina_piantagione(piantagione_id):
     return redirect(url_for('dashboard_admin'))
     
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+@app.route('/api/piantagioni_utente', methods=['GET'])
+def piantagioni_utente():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    piantagioni = Piantagione.query.filter_by(user_id=user_id).all()
+    piantagioni_list = [{
+        'nome': piantagione.nome,
+        'descrizione': piantagione.descrizione,
+        'data_inizio': piantagione.data_inizio.isoformat(),
+    } for piantagione in piantagioni]
+    return jsonify(piantagioni_list)
+
+@app.route('/api/trattamenti_utente', methods=['GET'])
+def trattamenti_utente():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    trattamenti = Trattamenti.query.filter_by(user_id=user_id).all()
+    trattamenti_list = [{
+        'descrizione': trattamento.descrizione,
+        'data_inizio': trattamento.data_inizio.isoformat(),
+    } for trattamento in trattamenti]
+    return jsonify(trattamenti_list)
 
 
+@app.route('/api/associa_pianta_piantagione', methods=['POST'])
+def associa_pianta_piantagione():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return jsonify({'error': 'Non autorizzato'}), 401
+
+    # Recupera i dati dalla richiesta
+    piantagione_id = request.json.get('piantagione_id')
+    pianta_id = request.json.get('pianta_id')
+
+    # Validare i dati (facoltativo)
+    if not piantagione_id or not pianta_id:
+        return jsonify({'error': 'Campi obbligatori mancanti'}), 400
+
+    # Verifica se la piantagione esiste per l'utente
+    piantagione = Piantagione.query.filter_by(user_id=user_id, id=piantagione_id).first()
+    if not piantagione:
+        return jsonify({'error': 'Piantagione non trovata'}), 404
+
+    # Associa la pianta alla piantagione
+    # Supponendo di avere una relazione foreign key tra Piantagione e Piante
+    piantagione.pianta_id = pianta_id
+    db.session.commit()
+
+    return jsonify({'success': True})
 
 
 

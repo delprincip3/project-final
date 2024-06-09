@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Associa Pianta Trattamento</title>
+    <title>Associa Pianta a Trattamento</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center">Associa Pianta Trattamento</h1>
-        <form method="POST" class="space-y-4">
+        <h1 class="text-2xl font-bold mb-6 text-center">Associa Pianta a Trattamento</h1>
+        <form method="POST" id="associazioneForm" class="space-y-4">
             <div>
-                <label for="piantagione_id" class="block text-sm font-medium text-gray-700">Seleziona Piantagione:</label>
+                <label for="piantagione_id" class="block text-sm font-medium text-gray-700">Scegli Piantagione:</label>
                 <select id="piantagione_id" name="piantagione_id" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     <option value="">Seleziona una Piantagione</option>
                     {% for piantagione in piantagioni %}
@@ -20,7 +21,7 @@
                 </select>
             </div>
             <div>
-                <label for="pianta_id" class="block text-sm font-medium text-gray-700">Seleziona Pianta:</label>
+                <label for="pianta_id" class="block text-sm font-medium text-gray-700">Scegli Pianta:</label>
                 <select id="pianta_id" name="pianta_id" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     <option value="">Seleziona una Pianta</option>
                     {% for pianta in piante %}
@@ -41,9 +42,47 @@
                 <input type="date" id="data_fine" name="data_fine" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
             <div class="flex justify-center">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Associa Trattamento</button>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" id="associa">Associa Trattamento</button>
             </div>
-        </form>
-    </div>
-</body>
-</html>
+            
+            <script>
+            const associationForm = document.getElementById('associazioneForm');
+            
+            associationForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Prevent default form submission
+            
+                const piantagioneId = document.getElementById('piantagione_id').value;
+                const piantaId = document.getElementById('pianta_id').value;
+                const descrizione = document.getElementById('descrizione').value;
+                const dataInizio = document.getElementById('data_inizio').value;
+                const dataFine = document.getElementById('data_fine').value;
+            
+                // Validate input data (optional)
+            
+                const formData = {
+                    piantagione_id: piantagioneId,
+                    pianta_id: piantaId,
+                    descrizione,
+                    data_inizio: dataInizio,
+                    data_fine: dataFine,
+                };
+            
+                axios.post('/api/associa_pianta_piantagione', formData)
+                    .then(response => {
+                        if (response.data.success) {
+                            alert('Associazione avvenuta con successo!');
+                            // Clear the form
+                            associationForm.reset();
+                        } else {
+                            alert('Errore durante l\'associazione: ' + response.data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error associating plant:', error);
+                        alert('Errore durante l\'associazione: ' + error.message);
+                    });
+            });
+            </script>
+            </body>
+            </html>
+            
