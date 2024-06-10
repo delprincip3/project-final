@@ -5,36 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Utente - Ortoplan</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
-   
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-   
 </head>
 <body class="bg-gray-100">
-
+  
     <!-- Header -->
-    <header class="bg-green-700 text-white p-4 flex flex-col sm:flex-row justify-between items-center">
-        <h1 class="text-3xl mb-4 sm:mb-0">Benvenuto, {{ utente.nome }} {{ utente.cognome }}</h1>
-        <nav class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-            <a href="{{ url_for('index') }}" class="text-white hover:underline">Home</a>
-            <a href="{{ url_for('login') }}" class="text-white hover:underline">Logout</a>
-        </nav>
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <!-- Logo/Title -->
+            <div class="flex items-center space-x-2">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Ortoplan Logo" class="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 rounded-full">
+                <h1 class="text-xl sm:text-2xl lg:text-3xl text-green-600 font-bold">Benvenuto, {{ utente.nome }} {{ utente.cognome }}</h1>
+            </div>
+            <!-- Mobile Menu Button -->
+            <div class="block lg:hidden">
+                <button id="mobile-menu-button" class="text-green-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <!-- Navigation Menu -->
+            <nav class="hidden lg:flex space-x-4">
+                <a href="{{ url_for('login') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Logout</a>
+            </nav>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden">
+            <nav class="px-2 pt-2 pb-4 space-y-1">
+                
+                <a href="{{ url_for('login') }}" class="block px-3 py-2 mt-2 rounded-lg text-center bg-green-600 text-white hover:bg-green-700">Logout</a>
+            </nav>
+        </div>
     </header>
-
+    
     <!-- Main content -->
     <div class="container mx-auto p-4">
-
-      <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-        <h2 class="text-2xl font-bold mb-4">Meteo Attuale ad Apricena</h2>
-        <div id="meteo" class="flex items-center space-x-4">
-          <i id="weather-icon" class="fas fa-2x"></i>  <div>
-            <p id="weather-description">Caricamento...</p>
-            <img src = "" class = "h-11">
-            <p id="temperature"></p>
-          </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Meteo Attuale ad Apricena</h2>
+            <div id="meteo" class="flex items-center space-x-4">
+                <i id="weather-icon" class="fas fa-2x"></i>
+                <div>
+                    <p id="weather-description">Caricamento...</p>
+                    <img src="" class="h-11" alt="Weather Icon">
+                    <p id="temperature"></p>
+                </div>
+            </div>
+            <button id="get-weather" class="btn btn-primary mt-4">Aggiorna Meteo</button>
         </div>
-        <button id="get-weather" class="btn btn-primary mt-4">Aggiorna Meteo</button>
-      </div>
-      
 
         <!-- Crea Piantagione Section -->
         <div class="container mb-6">
@@ -43,15 +61,15 @@
                 <form method="POST" action="{{ url_for('crea_piantagione') }}">
                     <div class="mb-4">
                         <label for="nome" class="block text-gray-700">Nome Piantagione:</label>
-                        <input type="text" name="nome" id="nome" class=" bg-white block w-full mt-1" required>
+                        <input type="text" name="nome" id="nome" class="bg-white block w-full mt-1" required>
                     </div>
                     <div class="mb-4">
-                        <label for="descrizione" class=" block text-gray-700">Descrizione:</label>
-                        <textarea name="descrizione" id="descrizione" class=" bg-white block w-full mt-1" rows="4" required></textarea>
+                        <label for="descrizione" class="block text-gray-700">Descrizione:</label>
+                        <textarea name="descrizione" id="descrizione" class="bg-white block w-full mt-1" rows="4" required></textarea>
                     </div>
                     <div class="mb-4">
-                        <label for="data_inizio" class=" block text-gray-700">Data Inizio:</label>
-                        <input type="date" name="data_inizio" id="data_inizio" class=" bg-white block w-full mt-1" required>
+                        <label for="data_inizio" class="block text-gray-700">Data Inizio:</label>
+                        <input type="date" name="data_inizio" id="data_inizio" class="bg-white block w-full mt-1" required>
                     </div>
                     <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Crea Piantagione</button>
                 </form>
@@ -66,7 +84,7 @@
         <!-- Tabella Piantagioni e Piante Associate -->
         <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
             <h2 class="text-2xl font-bold mb-4">Le Tue Piantagioni</h2>
-            <table class="table-auto">
+            <table class="table-auto w-full">
                 <thead>
                     <tr>
                         <th class="px-4 py-2">Nome Piantagione</th>
@@ -93,181 +111,170 @@
         </div>
 
        <!-- Notifiche Section -->
-     <!--  <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-4">Notifiche</h2>
-        <ul id="notifications" class="list-disc list-inside">
-          {% for notifica in notifiche %}
-            <li>
-              {{ notifica.trattamento }} - 
-              Data inizio: {{ notifica.data_inizio }} - 
-              Data fine: {{ notifica.data_fine }}
-            </li>
-          {% endfor %}
-        </ul>
-      </div> -->
+       <!-- <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-4">Notifiche</h2>
+            <ul id="notifications" class="list-disc list-inside">
+                {% for notifica in notifiche %}
+                <li>
+                    {{ notifica.trattamento }} - 
+                    Data inizio: {{ notifica.data_inizio }} - 
+                    Data fine: {{ notifica.data_fine }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div> -->
     </div>
 
     <!-- Footer -->
     <footer class="bg-green-600 text-white py-4 px-6 text-center">
-      <p class="text-sm">Copyright © 2024 - All rights reserved by delprincip3</p>
-  </footer>
+        <p class="text-sm">Copyright © 2024 - All rights reserved by delprincip3</p>
+    </footer>
     
-  <script>
-    const associationForm = document.getElementById('associazioneForm');
-  
-    // Funzione per ottenere i dati delle piantagioni dell'utente dall'API e aggiornare il DOM
-    function fetchPiantagioni() {
-        axios.get('/api/piantagioni_utente')
-            .then(response => {
-                const piantagioni = response.data;
-                const tableBody = document.querySelector('#piantagioniTable tbody');
-                piantagioni.forEach(piantagione => {
-                    const row = tableBody.insertRow();
-                    const nomeCell = row.insertCell(0);
-                    const descrizioneCell = row.insertCell(1);
-                    const pianteCell = row.insertCell(2);
-        
-                    nomeCell.textContent = piantagione.nome;
-                    descrizioneCell.textContent = piantagione.descrizione;
-                    pianteCell.innerHTML = `<ul>${piantagione.piante.map(pianta => `<li>${pianta}</li>`).join('')}</ul>`;
-                });
-            })
-            .catch(error => {
-                console.error('Errore durante il recupero dei dati delle piantagioni:', error);
-            });
-    }
-
-    // Funzione per ottenere i dati dei trattamenti dall'API e aggiornare il DOM
-    function fetchTrattamenti() {
-        axios.get('/api/trattamenti_utente')
-            .then(response => {
-                const trattamenti = response.data;
-                const notificationsList = document.getElementById('notifications');
-                trattamenti.forEach(trattamento => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `Trattamento: ${trattamento.trattamento}, Data prevista: ${trattamento.data_prevista}`;
-                    notificationsList.appendChild(listItem);
-                });
-            })
-            .catch(error => {
-                console.error('Errore durante il recupero dei dati dei trattamenti:', error);
-            });
-    }
-
-    // Funzione per ottenere i dati meteorologici dall'API e aggiornare il DOM
-    function fetchWeather() {
-       
-        const latitude = 41.7863;  
-        const longitude = 15.4439; 
-
-        const weatherDescription = document.getElementById('weather-description');
-        const temperature = document.getElementById('temperature');
-        const weatherIcon = document.getElementById('weather-icon');
-
-        weatherDescription.textContent = 'Caricamento...';
-        temperature.textContent = '';
-        weatherIcon.classList.remove(...weatherIcon.classList); // Rimuovi le classi esistenti dell'icona
-
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode`;
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                const currentWeather = data.current;
-                const weatherIconSrc = defineWeatherIcon(currentWeather.weathercode);
-                weatherDescription.textContent = '';  // Assumendo una proprietà description nell'oggetto weathercode
-                const weatherIcon = document.querySelector('#weather-description + img');
-                weatherIcon.src = `/src/${weatherIconSrc}`;
-                temperature.textContent = `${currentWeather.temperature_2m}°C`;
-
-                // Aggiorna l'icona del meteo basata sul codice meteo (aggiungi la logica di mappatura delle icone)
-                const weatherCode = currentWeather.weathercode.toString();
-                if (weatherCode.startsWith('0')) {
-                    weatherIcon.classList.add('fas', 'fa-sun');
-                } else if (weatherCode.startsWith('1')) {
-                    weatherIcon.classList.add('fas', 'fa-cloud-sun');
-                } else {  // Aggiungi la logica per altri codici meteo
-                    weatherIcon.classList.add('fas', 'fa-cloud');
-                }
-            })
-            .catch(error => {
-                console.error('Errore durante il recupero dei dati meteorologici:', error);
-                weatherDescription.textContent = 'Errore durante il caricamento.';
-            });
-    }
-    function defineWeatherIcon(weatherCode){
-    /*
-        * Returns the corresponding weather icon to the API returned weather code
-    */
-    const weatherCodes = [
-        {
-            codes: [0],
-            icon: 'sun.svg'
-        },
-        {
-            codes: [1, 2, 3, 45, 48],
-            icon: 'cloudy.svg'
-        },
-        {
-            codes: [51, 53, 55, 56, 57, 61, 63, 65, 66, 67],
-            icon: 'rain.svg'
-        },
-        {
-            codes: [71, 73, 75, 77],
-            icon: 'snow.svg'
-        },
-        {
-            codes: [80, 81, 82, 85, 86, 95, 96, 99],
-            icon: 'thunderstorm.svg'
-        }
-    ];
-    return weatherCodes.find(weatherCodeObj => {
-        return weatherCodeObj.codes.includes(weatherCode);
-    }).icon;
-}
-
-    // Esegui le funzioni di setup
-    fetchWeather();
-    fetchPiantagioni();
-    fetchTrattamenti();
-
-    // Gestisci la sottomissione del modulo per associare una pianta a una piantagione
-    associationForm.addEventListener('submit', (event) => {
-        event.preventDefault(); // Impedisci la sottomissione predefinita del modulo
-
-        const piantagioneId = document.getElementById('piantagione_id').value;
-        const piantaId = document.getElementById('pianta_id').value;
-        const descrizione = document.getElementById('descrizione').value;
-        const dataInizio = document.getElementById('data_inizio').value;
-        const dataFine = document.getElementById('data_fine').value;
-
-        // Valida i dati di input (opzionale)
-        const formData = {
-            piantagione_id: piantagioneId,
-            pianta_id: piantaId,
-            descrizione,
-            data_inizio: dataInizio,
-            data_fine: dataFine,
-        };
-
-        axios.post('/api/associa_pianta_piantagione', formData)
-            .then(response => {
-                if (response.data.success) {
-                    alert('Associazione avvenuta con successo!');
-                    // Pulisci il modulo
-                    associationForm.reset();
-                } else {
-                    alert('Errore durante l\'associazione: ' + response.data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Errore durante l\'associazione:', error);
-                alert('Errore durante l\'associazione: ' + error.message);
-            });
-    });
-</script>
-
+    <script>
       
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+            } else {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+    
+        const associationForm = document.getElementById('associazioneForm');
+      
+        // Funzione per ottenere i dati delle piantagioni dell'utente dall'API e aggiornare il DOM
+        function fetchPiantagioni() {
+            axios.get('/api/piantagioni_utente')
+                .then(response => {
+                    const piantagioni = response.data;
+                    const tableBody = document.querySelector('#piantagioniTable tbody');
+                    piantagioni.forEach(piantagione => {
+                        const row = tableBody.insertRow();
+                        const nomeCell = row.insertCell(0);
+                        const descrizioneCell = row.insertCell(1);
+                        const pianteCell = row.insertCell(2);
+            
+                        nomeCell.textContent = piantagione.nome;
+                        descrizioneCell.textContent = piantagione.descrizione;
+                        pianteCell.innerHTML = `<ul>${piantagione.piante.map(pianta => `<li>${pianta}</li>`).join('')}</ul>`;
+                    });
+                })
+                .catch(error => {
+                    console.error('Errore durante il recupero dei dati delle piantagioni:', error);
+                });
+        }
+
+        // Funzione per ottenere i dati dei trattamenti dall'API e aggiornare il DOM
+        function fetchTrattamenti() {
+            axios.get('/api/trattamenti_utente')
+                .then(response => {
+                    const trattamenti = response.data;
+                    const notificationsList = document.getElementById('notifications');
+                    trattamenti.forEach(trattamento => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `Trattamento: ${trattamento.trattamento}, Data prevista: ${trattamento.data_prevista}`;
+                        notificationsList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Errore durante il recupero dei dati dei trattamenti:', error);
+                });
+        }
+
+        // Funzione per ottenere i dati meteorologici dall'API e aggiornare il DOM
+        function fetchWeather() {
+            const latitude = 41.7863;  
+            const longitude = 15.4439; 
+
+            const weatherDescription = document.getElementById('weather-description');
+            const temperature = document.getElementById('temperature');
+            const weatherIcon = document.getElementById('weather-icon');
+
+            weatherDescription.textContent = 'Caricamento...';
+            temperature.textContent = '';
+            weatherIcon.classList.remove(...weatherIcon.classList); // Rimuovi le classi esistenti dell'icona
+
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const currentWeather = data.current;
+                    const weatherIconSrc = defineWeatherIcon(currentWeather.weathercode);
+                    weatherDescription.textContent = '';  // Assumendo una proprietà description nell'oggetto weathercode
+                    const weatherIconElement = document.querySelector('#weather-description + img');
+                    weatherIconElement.src = `/src/${weatherIconSrc}`;
+                    temperature.textContent = `${currentWeather.temperature_2m}°C`;
+
+                    // Aggiorna l'icona del meteo basata sul codice meteo (aggiungi la logica di mappatura delle icone)
+                    const weatherCode = currentWeather.weathercode.toString();
+                    if (weatherCode.startsWith('0')) {
+                        weatherIcon.classList.add('fas', 'fa-sun');
+                    } else if (weatherCode.startsWith('1')) {
+                        weatherIcon.classList.add('fas', 'fa-cloud-sun');
+                    } else {  // Aggiungi la logica per altri codici meteo
+                        weatherIcon.classList.add('fas', 'fa-cloud');
+                    }
+                })
+                .catch(error => {
+                    console.error('Errore durante il recupero dei dati meteorologici:', error);
+                    weatherDescription.textContent = 'Errore durante il caricamento.';
+                });
+        }
+
+        function defineWeatherIcon(weatherCode){
+            const weatherCodes = [
+                { codes: [0], icon: 'sun.svg' },
+                { codes: [1, 2, 3, 45, 48], icon: 'cloudy.svg' },
+                { codes: [51, 53, 55, 56, 57, 61, 63, 65, 66, 67], icon: 'rain.svg' },
+                { codes: [71, 73, 75, 77], icon: 'snow.svg' },
+                { codes: [80, 81, 82, 85, 86, 95, 96, 99], icon: 'thunderstorm.svg' }
+            ];
+            return weatherCodes.find(weatherCodeObj => {
+                return weatherCodeObj.codes.includes(weatherCode);
+            }).icon;
+        }
+
+        // Esegui le funzioni di setup
+        fetchWeather();
+        fetchPiantagioni();
+        fetchTrattamenti();
+
+        // Gestisci la sottomissione del modulo per associare una pianta a una piantagione
+        associationForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // Impedisci la sottomissione predefinita del modulo
+
+            const piantagioneId = document.getElementById('piantagione_id').value;
+            const piantaId = document.getElementById('pianta_id').value;
+            const descrizione = document.getElementById('descrizione').value;
+            const dataInizio = document.getElementById('data_inizio').value;
+            const dataFine = document.getElementById('data_fine').value;
+
+            // Valida i dati di input (opzionale)
+            const formData = {
+                piantagione_id: piantagioneId,
+                pianta_id: piantaId,
+                descrizione,
+                data_inizio: dataInizio,
+                data_fine: dataFine,
+            };
+
+            axios.post('/api/associa_pianta_piantagione', formData)
+                .then(response => {
+                    if (response.data.success) {
+                        alert('Associazione avvenuta con successo!');
+                        // Pulisci il modulo
+                        associationForm.reset();
+                    } else {
+                        alert('Errore durante l\'associazione: ' + response.data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Errore durante l\'associazione:', error);
+                    alert('Errore durante l\'associazione: ' + error.message);
+                });
+        });
+    </script>
 </body>
 </html>
-

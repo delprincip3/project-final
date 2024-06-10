@@ -148,7 +148,7 @@ def login():
         if utente and utente.password == password:
             session['user_id'] = utente.id
             session.permanent = True  # per mantenere la sessione permanente per la durata specificata
-            flash('Login eseguito con successo!', 'success')
+            flash(' Eseguito con successo!', 'success')
 
             if utente.tipo == 'admin':
                 return redirect(url_for('dashboard_admin'))

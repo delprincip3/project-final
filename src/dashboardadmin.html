@@ -12,13 +12,35 @@
 <body class="bg-gray-100">
 
     <!-- Header -->
-    <header class="bg-green-700 text-white py-4 px-6 flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Benvenuto, Admin {{ utente.nome }} {{ utente.cognome }}</h1>
-        <nav>
-            <a href="{{ url_for('index') }}" class="text-white hover:underline">Home</a>
-            <a href="{{ url_for('login') }}" class="text-white hover:underline">Logout</a>
-        </nav>
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <!-- Logo/Title -->
+            <div class="flex items-center space-x-2">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Ortoplan Logo" class="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 rounded-full">
+                <h1 class="text-xl sm:text-2xl lg:text-3xl text-green-600 font-bold">Benvenuto, {{ utente.nome }} {{ utente.cognome }}</h1>
+            </div>
+            <!-- Mobile Menu Button -->
+            <div class="block lg:hidden">
+                <button id="mobile-menu-button" class="text-green-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <!-- Navigation Menu -->
+            <nav class="hidden lg:flex space-x-4">
+                <a href="{{ url_for('login') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Logout</a>
+            </nav>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden">
+            <nav class="px-2 pt-2 pb-4 space-y-1">
+                
+                <a href="{{ url_for('login') }}" class="block px-3 py-2 mt-2 rounded-lg text-center bg-green-600 text-white hover:bg-green-700">Logout</a>
+            </nav>
+        </div>
     </header>
+    
 
     <!-- Main content -->
     <div class="container mx-auto px-4 py-8">
@@ -38,47 +60,25 @@
                 {% endfor %}
             </ul>
         </div>
-
-        <!-- Piantagioni Section -->
-        <div class="bg-white p-6 rounded-lg shadow mb-6">
-            <h2 class="text-xl font-semibold mb-4">Piantagioni</h2>
-            <ul>
-                {% for piantagione in piantagioni %}
-                    <li class="flex items-center justify-between py-2 border-b">
-                        <span>{{ piantagione.nome }} - {{ piantagione.descrizione }}</span>
-                        <div class="space-x-2">
-                            <button onclick="editPiantagione('{{ piantagione.id }}')" class="btn btn-sm btn-blue">Modifica</button>
-                            <button onclick="deletePiantagione('{{ piantagione.id }}')" class="btn btn-sm btn-red">Elimina</button>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <!-- Trattamenti Section -->
-        <div class="bg-white p-6 rounded-lg shadow mb-6">
-            <h2 class="text-xl font-semibold mb-4">Trattamenti</h2>
-            <ul>
-                {% for trattamento in trattamenti %}
-                    <li class="flex items-center justify-between py-2 border-b">
-                        <span>{{ trattamento.descrizione }} - {{ trattamento.data_inizio }} - {{ trattamento.data_fine }}</span>
-                        <div class="space-x-2">
-                            <button onclick="editTrattamento('{{ trattamento.id }}')" class="btn btn-sm btn-blue">Modifica</button>
-                            <button onclick="deleteTrattamento('{{ trattamento.id }}')" class="btn btn-sm btn-red">Elimina</button>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
         </div>
 
      
+     
 
-    <!-- Footer -->
-    <footer class="bg-green-600 text-white py-4 px-6 text-center">
-        <p class="text-sm">Copyright © 2024 - All rights reserved by delprincip3</p>
-    </footer>
+        <footer class="bg-green-600 text-white py-4 px-6 text-center m-auto">
+            <p class="text-sm">Copyright © 2024 - All rights reserved by delprincip3</p>
+        </footer>
 
     <script>
+
+document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+            } else {
+                mobileMenu.classList.add('hidden');
+            }
+        });
         // Funzioni per gestire modifiche ed eliminazioni
         function editUser(userId) {
             const nome = prompt("Inserisci il nuovo nome:");
@@ -154,135 +154,6 @@
                 form.submit();
             }
         }
-
-        function editPiantagione(piantagioneId) {
-            const nome = prompt("Inserisci il nuovo nome:");
-            const descrizione = prompt("Inserisci la nuova descrizione:");
-
-            if (nome && descrizione) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/dashboardadmin';
-
-                const actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = 'edit_piantagione';
-                form.appendChild(actionInput);
-
-                const piantagioneIdInput = document.createElement('input');
-                piantagioneIdInput.type = 'hidden';
-                piantagioneIdInput.name = 'piantagione_id';
-                piantagioneIdInput.value = piantagioneId;
-                form.appendChild(piantagioneIdInput);
-
-                const nomeInput = document.createElement('input');
-                nomeInput.type = 'hidden';
-                nomeInput.name = 'nome';
-                nomeInput.value = nome;
-                form.appendChild(nomeInput);
-
-                const descrizioneInput = document.createElement('input');
-                descrizioneInput.type = 'hidden';
-                descrizioneInput.name = 'descrizione';
-                descrizioneInput.value = descrizione;
-                form.appendChild(descrizioneInput);
-
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
-        function deletePiantagione(piantagioneId) {
-            if (confirm("Sei sicuro di voler eliminare questa piantagione?")) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/dashboardadmin';
-
-                const actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = 'delete_piantagione';
-                form.appendChild(actionInput);
-
-                const piantagioneIdInput = document.createElement('input');
-                piantagioneIdInput.type = 'hidden';
-                piantagioneIdInput.name = 'piantagione_id';
-                piantagioneIdInput.value = piantagioneId;
-                form.appendChild(piantagioneIdInput);
-
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
-        function editTrattamento(trattamentoId) {
-            const descrizione = prompt("Inserisci la nuova descrizione:");
-            const dataInizio = prompt("Inserisci la nuova data di inizio (YYYY-MM-DD):");
-            const dataFine = prompt("Inserisci la nuova data di fine (YYYY-MM-DD):");
-
-            if (descrizione && dataInizio && dataFine) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/dashboardadmin';
-
-                const actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = 'edit_trattamento';
-                form.appendChild(actionInput);
-
-                const trattamentoIdInput = document.createElement('input');
-                trattamentoIdInput.type = 'hidden';
-                trattamentoIdInput.name = 'trattamento_id';
-                trattamentoIdInput.value = trattamentoId;
-                form.appendChild(trattamentoIdInput);
-
-                const descrizioneInput = document.createElement('input');
-                descrizioneInput.type = 'hidden';
-                descrizioneInput.name = 'descrizione';
-                descrizioneInput.value = descrizione;
-                form.appendChild(descrizioneInput);
-
-                const dataInizioInput = document.createElement('input');
-                dataInizioInput.type = 'hidden';
-                dataInizioInput.name = 'data_inizio';
-                dataInizioInput.value = dataInizio;
-                form.appendChild(dataInizioInput);
-
-                const dataFineInput = document.createElement('input');
-                dataFineInput.type = 'hidden';
-                dataFineInput.name = 'data_fine';
-                dataFineInput.value = dataFine;
-                form.appendChild(dataFineInput);
-
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
-        function deleteTrattamento(trattamentoId) {
-            if (confirm("Sei sicuro di voler eliminare questo trattamento?")) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/dashboardadmin';
-
-                const actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = 'delete_trattamento';
-                form.appendChild(actionInput);
-
-                const trattamentoIdInput = document.createElement('input');
-                trattamentoIdInput.type = 'hidden';
-                trattamentoIdInput.name = 'trattamento_id';
-                trattamentoIdInput.value = trattamentoId;
-                form.appendChild(trattamentoIdInput);
-
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-    </script>
+ </script>
 </body>
 </html>
