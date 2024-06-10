@@ -3,56 +3,42 @@ from flask_sqlalchemy import SQLAlchemy
 from forms import LoginForm, RegisterForm, PianteForm, TrattamentiForm, EliminaPiantaForm, EliminaUtenteForm, ModificaUtenteForm, AssociaPiantaTrattamentoForm
 from datetime import timedelta
 from flask_migrate import Migrate
-import openmeteo_requests
-
-import requests_cache
-import pandas as pd
-from retry_requests import retry
-
-# Setup the Open-Meteo API client with cache and retry on error
-cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
-retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
-openmeteo = openmeteo_requests.Client(session = retry_session)
-
-# Make sure all required weather variables are listed here
-# The order of variables in hourly or daily is important to assign them correctly below
-url = "https://previous-runs-api.open-meteo.com/v1/forecast"
-params = {
-	"latitude": 41.7863,
-	"longitude": 15.4439,
-	"hourly": ["temperature_2m", "temperature_2m_previous_day1", "temperature_2m_previous_day2", "temperature_2m_previous_day3", "temperature_2m_previous_day4", "temperature_2m_previous_day5"],
-	"timezone": "auto",
-	"past_days": 7
-}
-responses = openmeteo.weather_api(url, params=params)
-
-# Process first location. Add a for-loop for multiple locations or weather models
-response = responses[0]
 
 
-# Process hourly data. The order of variables needs to be the same as requested.
-hourly = response.Hourly()
-hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
-hourly_temperature_2m_previous_day1 = hourly.Variables(1).ValuesAsNumpy()
-hourly_temperature_2m_previous_day2 = hourly.Variables(2).ValuesAsNumpy()
-hourly_temperature_2m_previous_day3 = hourly.Variables(3).ValuesAsNumpy()
-hourly_temperature_2m_previous_day4 = hourly.Variables(4).ValuesAsNumpy()
-hourly_temperature_2m_previous_day5 = hourly.Variables(5).ValuesAsNumpy()
+import requests
 
-hourly_data = {"date": pd.date_range(
-	start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
-	end = pd.to_datetime(hourly.TimeEnd(), unit = "s", utc = True),
-	freq = pd.Timedelta(seconds = hourly.Interval()),
-	inclusive = "left"
-)}
-hourly_data["temperature_2m"] = hourly_temperature_2m
-hourly_data["temperature_2m_previous_day1"] = hourly_temperature_2m_previous_day1
-hourly_data["temperature_2m_previous_day2"] = hourly_temperature_2m_previous_day2
-hourly_data["temperature_2m_previous_day3"] = hourly_temperature_2m_previous_day3
-hourly_data["temperature_2m_previous_day4"] = hourly_temperature_2m_previous_day4
-hourly_data["temperature_2m_previous_day5"] = hourly_temperature_2m_previous_day5
+# Sostituisci con la tua chiave API se necessario
+api_key = None
 
-hourly_dataframe = pd.DataFrame(data = hourly_data)
+# URL e parametri della richiesta
+url = "https://api.open-meteo.com/v1/forecast?latitude=41.7863&longitude=15.4439&current=temperature_2m,precipitation,rain,showers,snowfall,weather_code"
+
+# Invio della richiesta GET e archiviazione della risposta
+risposta = requests.get(url)
+
+# Controllo dell'esito della richiesta
+if risposta.status_code == 200:
+    # Parsing dei dati JSON della risposta
+    dati = risposta.json()
+
+    # Accesso ai singoli elementi dei dati dal JSON
+    temperatura_attuale = dati['current']['temperature_2m']
+    precipitazioni = dati['current']['precipitation']
+    pioggia = dati['current']['rain']
+    acquazzoni = dati['current']['showers']
+    nevicate = dati['current']['snowfall']
+    codice_meteo = dati['current']['weather_code']
+
+    # Stampa o utilizzo dei dati recuperati
+    print("Temperatura attuale:", temperatura_attuale)
+    print("Precipitazioni:", precipitazioni)
+    print("Pioggia:", pioggia)
+    print("Acquazzoni:", acquazzoni)
+    print("Nevicate:", nevicate)
+    print("Codice meteo:", codice_meteo)
+else:
+    # Gestione dell'errore API
+    print("Errore:", risposta.status_code)
 
 
 

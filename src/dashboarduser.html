@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Utente - Ortoplan</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMUhb23mH6JbuHkxE04dNJ7RSI3bRTKIMt/itbZ" crossorigin="anonymous">
+   
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   
 </head>
 <body class="bg-gray-100">
 
@@ -23,17 +23,18 @@
     <!-- Main content -->
     <div class="container mx-auto p-4">
 
-        <!-- Meteo Section -->
-        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-2xl font-bold mb-4">Meteo Attuale</h2>
-            <div id="meteo" class="flex items-center space-x-4">
-                <i class="fas fa-cloud-sun fa-2x text-yellow-500"></i>
-                <div>
-                    <p id="weather-description">Caricamento...</p>
-                    <p id="temperature"></p>
-                </div>
-            </div>
+      <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-2xl font-bold mb-4">Meteo Attuale ad Apricena</h2>
+        <div id="meteo" class="flex items-center space-x-4">
+          <i id="weather-icon" class="fas fa-2x"></i>  <div>
+            <p id="weather-description">Caricamento...</p>
+            <img src = "" class = "h-11">
+            <p id="temperature"></p>
+          </div>
         </div>
+        <button id="get-weather" class="btn btn-primary mt-4">Aggiorna Meteo</button>
+      </div>
+      
 
         <!-- Crea Piantagione Section -->
         <div class="container mb-6">
@@ -42,15 +43,15 @@
                 <form method="POST" action="{{ url_for('crea_piantagione') }}">
                     <div class="mb-4">
                         <label for="nome" class="block text-gray-700">Nome Piantagione:</label>
-                        <input type="text" name="nome" id="nome" class="block w-full mt-1" required>
+                        <input type="text" name="nome" id="nome" class=" bg-white block w-full mt-1" required>
                     </div>
                     <div class="mb-4">
-                        <label for="descrizione" class="block text-gray-700">Descrizione:</label>
-                        <textarea name="descrizione" id="descrizione" class="block w-full mt-1" rows="4" required></textarea>
+                        <label for="descrizione" class=" block text-gray-700">Descrizione:</label>
+                        <textarea name="descrizione" id="descrizione" class=" bg-white block w-full mt-1" rows="4" required></textarea>
                     </div>
                     <div class="mb-4">
-                        <label for="data_inizio" class="block text-gray-700">Data Inizio:</label>
-                        <input type="date" name="data_inizio" id="data_inizio" class="block w-full mt-1" required>
+                        <label for="data_inizio" class=" block text-gray-700">Data Inizio:</label>
+                        <input type="date" name="data_inizio" id="data_inizio" class=" bg-white block w-full mt-1" required>
                     </div>
                     <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Crea Piantagione</button>
                 </form>
@@ -92,7 +93,7 @@
         </div>
 
        <!-- Notifiche Section -->
-       <div class="bg-white p-6 rounded-lg shadow-lg">
+     <!--  <div class="bg-white p-6 rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold mb-4">Notifiche</h2>
         <ul id="notifications" class="list-disc list-inside">
           {% for notifica in notifiche %}
@@ -103,111 +104,169 @@
             </li>
           {% endfor %}
         </ul>
-      </div>
-      
+      </div> -->
+    </div>
 
     <!-- Footer -->
     <footer class="bg-green-600 text-white py-4 px-6 text-center">
-        <p class="text-sm">Copyright © <script>document.write(new Date().getFullYear())</script> - All rights reserved by delprincip3</p>
-    </footer>
+      <p class="text-sm">Copyright © 2024 - All rights reserved by delprincip3</p>
+  </footer>
     
-    <script>
-        const associationForm = document.getElementById('associazioneForm');
-      
-        // Fetch weather data from API and update DOM
-        function fetchWeather() {
-          axios.get('/api/weather')
+  <script>
+    const associationForm = document.getElementById('associazioneForm');
+  
+    // Funzione per ottenere i dati delle piantagioni dell'utente dall'API e aggiornare il DOM
+    function fetchPiantagioni() {
+        axios.get('/api/piantagioni_utente')
             .then(response => {
-              const weatherData = response.data;
-              const temperature = weatherData.temperature_2m[0];  // Example of using the first temperature value
-              document.getElementById('weather-description').textContent = "Temperatura attuale:";
-              document.getElementById('temperature').textContent = `${temperature}°C`;
+                const piantagioni = response.data;
+                const tableBody = document.querySelector('#piantagioniTable tbody');
+                piantagioni.forEach(piantagione => {
+                    const row = tableBody.insertRow();
+                    const nomeCell = row.insertCell(0);
+                    const descrizioneCell = row.insertCell(1);
+                    const pianteCell = row.insertCell(2);
+        
+                    nomeCell.textContent = piantagione.nome;
+                    descrizioneCell.textContent = piantagione.descrizione;
+                    pianteCell.innerHTML = `<ul>${piantagione.piante.map(pianta => `<li>${pianta}</li>`).join('')}</ul>`;
+                });
             })
             .catch(error => {
-              console.error('Errore durante il recupero dei dati meteorologici:', error);
+                console.error('Errore durante il recupero dei dati delle piantagioni:', error);
             });
-        }
-      
-        // Fetch user plantations data from API and update DOM
-        function fetchPiantagioni() {
-          axios.get('/api/piantagioni_utente')
+    }
+
+    // Funzione per ottenere i dati dei trattamenti dall'API e aggiornare il DOM
+    function fetchTrattamenti() {
+        axios.get('/api/trattamenti_utente')
             .then(response => {
-              const piantagioni = response.data;
-              const tableBody = document.querySelector('#piantagioniTable tbody');
-              piantagioni.forEach(piantagione => {
-                const row = tableBody.insertRow();
-                const nomeCell = row.insertCell(0);
-                const descrizioneCell = row.insertCell(1);
-                const pianteCell = row.insertCell(2);
-      
-                nomeCell.textContent = piantagione.nome;
-                descrizioneCell.textContent = piantagione.descrizione;
-                pianteCell.innerHTML = `<ul>${piantagioni.piante.map(pianta => `<li>${pianta}</li>`).join('')}</ul>`;
-              });
+                const trattamenti = response.data;
+                const notificationsList = document.getElementById('notifications');
+                trattamenti.forEach(trattamento => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Trattamento: ${trattamento.trattamento}, Data prevista: ${trattamento.data_prevista}`;
+                    notificationsList.appendChild(listItem);
+                });
             })
             .catch(error => {
-              console.error('Error fetching user plantations data:', error);
+                console.error('Errore durante il recupero dei dati dei trattamenti:', error);
             });
-        }
-      
-        // Fetch trattamenti data from API and update DOM
-        function fetchTrattamenti() {
-          axios.get('/api/trattamenti_utente')
-            .then(response => {
-              const trattamenti = response.data;
-              const notificationsList = document.getElementById('notifications');
-              trattamenti.forEach(trattamento => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `Trattamento: ${trattamento.trattamento}, Data prevista: ${trattamento.data_prevista}`;
-                notificationsList.appendChild(listItem);
-              });
+    }
+
+    // Funzione per ottenere i dati meteorologici dall'API e aggiornare il DOM
+    function fetchWeather() {
+       
+        const latitude = 41.7863;  
+        const longitude = 15.4439; 
+
+        const weatherDescription = document.getElementById('weather-description');
+        const temperature = document.getElementById('temperature');
+        const weatherIcon = document.getElementById('weather-icon');
+
+        weatherDescription.textContent = 'Caricamento...';
+        temperature.textContent = '';
+        weatherIcon.classList.remove(...weatherIcon.classList); // Rimuovi le classi esistenti dell'icona
+
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const currentWeather = data.current;
+                const weatherIconSrc = defineWeatherIcon(currentWeather.weathercode);
+                weatherDescription.textContent = '';  // Assumendo una proprietà description nell'oggetto weathercode
+                const weatherIcon = document.querySelector('#weather-description + img');
+                weatherIcon.src = `/src/${weatherIconSrc}`;
+                temperature.textContent = `${currentWeather.temperature_2m}°C`;
+
+                // Aggiorna l'icona del meteo basata sul codice meteo (aggiungi la logica di mappatura delle icone)
+                const weatherCode = currentWeather.weathercode.toString();
+                if (weatherCode.startsWith('0')) {
+                    weatherIcon.classList.add('fas', 'fa-sun');
+                } else if (weatherCode.startsWith('1')) {
+                    weatherIcon.classList.add('fas', 'fa-cloud-sun');
+                } else {  // Aggiungi la logica per altri codici meteo
+                    weatherIcon.classList.add('fas', 'fa-cloud');
+                }
             })
             .catch(error => {
-              console.error('Error fetching trattamenti data:', error);
+                console.error('Errore durante il recupero dei dati meteorologici:', error);
+                weatherDescription.textContent = 'Errore durante il caricamento.';
             });
+    }
+    function defineWeatherIcon(weatherCode){
+    /*
+        * Returns the corresponding weather icon to the API returned weather code
+    */
+    const weatherCodes = [
+        {
+            codes: [0],
+            icon: 'sun.svg'
+        },
+        {
+            codes: [1, 2, 3, 45, 48],
+            icon: 'cloudy.svg'
+        },
+        {
+            codes: [51, 53, 55, 56, 57, 61, 63, 65, 66, 67],
+            icon: 'rain.svg'
+        },
+        {
+            codes: [71, 73, 75, 77],
+            icon: 'snow.svg'
+        },
+        {
+            codes: [80, 81, 82, 85, 86, 95, 96, 99],
+            icon: 'thunderstorm.svg'
         }
-      
-        // Run setup functions
-        fetchWeather();
-        fetchPiantagioni();
-        fetchTrattamenti();
-      
-        // Handle form submission for associating plant to plantation
-        associationForm.addEventListener('submit', (event) => {
-          event.preventDefault(); // Prevent default form submission
-      
-          const piantagioneId = document.getElementById('piantagione_id').value;
-          const piantaId = document.getElementById('pianta_id').value;
-          const descrizione = document.getElementById('descrizione').value;
-          const dataInizio = document.getElementById('data_inizio').value;
-          const dataFine = document.getElementById('data_fine').value;
-      
-          // Validate input data (optional)
-      
-          const formData = {
+    ];
+    return weatherCodes.find(weatherCodeObj => {
+        return weatherCodeObj.codes.includes(weatherCode);
+    }).icon;
+}
+
+    // Esegui le funzioni di setup
+    fetchWeather();
+    fetchPiantagioni();
+    fetchTrattamenti();
+
+    // Gestisci la sottomissione del modulo per associare una pianta a una piantagione
+    associationForm.addEventListener('submit', (event) => {
+        event.preventDefault(); // Impedisci la sottomissione predefinita del modulo
+
+        const piantagioneId = document.getElementById('piantagione_id').value;
+        const piantaId = document.getElementById('pianta_id').value;
+        const descrizione = document.getElementById('descrizione').value;
+        const dataInizio = document.getElementById('data_inizio').value;
+        const dataFine = document.getElementById('data_fine').value;
+
+        // Valida i dati di input (opzionale)
+        const formData = {
             piantagione_id: piantagioneId,
             pianta_id: piantaId,
             descrizione,
             data_inizio: dataInizio,
             data_fine: dataFine,
-          };
-      
-          axios.post('/api/associa_pianta_piantagione', formData)
+        };
+
+        axios.post('/api/associa_pianta_piantagione', formData)
             .then(response => {
-              if (response.data.success) {
-                alert('Associazione avvenuta con successo!');
-                // Clear the form
-                associationForm.reset();
-              } else {
-                alert('Errore durante l\'associazione: ' + response.data.error);
-              }
+                if (response.data.success) {
+                    alert('Associazione avvenuta con successo!');
+                    // Pulisci il modulo
+                    associationForm.reset();
+                } else {
+                    alert('Errore durante l\'associazione: ' + response.data.error);
+                }
             })
             .catch(error => {
-              console.error('Error associating plant:', error);
-              alert('Errore durante l\'associazione: ' + error.message);
+                console.error('Errore durante l\'associazione:', error);
+                alert('Errore durante l\'associazione: ' + error.message);
             });
-        });
-      </script>
+    });
+</script>
+
       
 </body>
 </html>
