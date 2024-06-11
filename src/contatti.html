@@ -6,17 +6,39 @@
     <title>Contact</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 </head>
 <body>
 <div class="bg-gray-100 min-h-screen">
-    <header class="bg-green-700 text-white p-4 flex flex-col sm:flex-row justify-between items-center">
-        <h1 class="text-3xl mb-4 sm:mb-0">Ortoplan - Contact</h1>
-        <nav class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-            <a href="{{ url_for('index') }}" class="text-white hover:underline">Home</a>
-            <a href="{{ url_for('login') }}" class="text-white hover:underline">Login</a>
+  <!-- Header -->
+<header class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <!-- Logo/Title -->
+        <div class="flex items-center space-x-2">
+            <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Ortoplan Logo" class="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 rounded-full">
+            <h1>Contatti</h1>
+        </div>
+        <!-- Mobile Menu Button -->
+        <div class="block lg:hidden max-h-full">
+            <button id="mobile-menu-button" class="text-green-600 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        <!-- Navigation Menu -->
+        <nav class="hidden lg:flex space-x-4">
+            <a href="{{ url_for('login') }}" class="btn btn-sm btn-outline text-white bg-green-600 hover:bg-green-700">Login</a>
         </nav>
-    </header>
-
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden">
+        <nav class="px-2 pt-2 pb-4 space-y-1">
+            <a href="{{ url_for('login') }}" class="block px-3 py-2 mt-2 rounded-lg text-center text-white bg-green-600 hover:bg-green-700">Login</a>
+        </nav>
+    </div>
+</header>
  
 
     <div class="container mx-auto mt-24 px-6 py-10 bg-white shadow-md rounded-lg">
@@ -46,12 +68,21 @@
     </div>
     
 </div>
-    <footer class="footer footer-center p-4 bg-gray-300 text-gray-800 mt-auto">
-        <div class="container mx-auto text-center">
-            <p>&copy; 2024 - All rights reserved by delprincip3</p>
-        </div>
+    <!-- Footer -->
+    <footer class="bg-green-800 text-white py-4 px-6 text-center">
+        <p class="text-sm">Copyright © 2024 - All rights reserved by delprincip3</p>
     </footer>
+    <script>
+         
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+           const mobileMenu = document.getElementById('mobile-menu');
+           if (mobileMenu.classList.contains('hidden')) {
+               mobileMenu.classList.remove('hidden');
+           } else {
+               mobileMenu.classList.add('hidden');
+           }
+       });
+   </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 </body>
 </html>
