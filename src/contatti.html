@@ -30,12 +30,14 @@
         <!-- Navigation Menu -->
         <nav class="hidden lg:flex space-x-4">
             <a href="{{ url_for('login') }}" class="btn btn-sm btn-outline text-white bg-green-600 hover:bg-green-700">Login</a>
+            <a href="{{ url_for('index') }}" class="btn btn-sm btn-outline text-white bg-green-800 hover:bg-green-900">Home</a>
         </nav>
     </div>
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden lg:hidden">
         <nav class="px-2 pt-2 pb-4 space-y-1">
             <a href="{{ url_for('login') }}" class="block px-3 py-2 mt-2 rounded-lg text-center text-white bg-green-600 hover:bg-green-700">Login</a>
+            <a href="{{ url_for('index') }}" class="block px-3 py-2 mt-2 rounded-lg text-center text-white bg-green-900 hover:bg-green-900">Home</a>
         </nav>
     </div>
 </header>
