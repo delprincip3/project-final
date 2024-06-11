@@ -257,7 +257,7 @@ def dashboard_user():
 
     if utente is not None:
         # Recupera le piantagioni dell'utente
-        piantagioni = Piantagione.query.filter_by(user_id=utente.id).all()
+        piantagioni = Piantagione.query.join(Piante, Piante.id == Piantagione.pianta_id).filter(Piantagione.user_id == utente.id).all()
         
         # Estrai i trattamenti e le piante
         trattamenti = [trattamento for piantagione in piantagioni for trattamento in Trattamenti.query.filter_by(pianta_id=piantagione.pianta_id).all()]

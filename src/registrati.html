@@ -10,30 +10,30 @@
     <div class="min-h-screen flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
             <div class="flex justify-center mb-4">
-                <img src="src/logo.jpg" alt="Ortoplan Logo" class="h-20 w-20 sm:h-24 sm:w-24 lg:h-28 lg:w-28">
+                <img src="src/logo.jpg" alt="Ortoplan Logo" class="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 rounded-full">
             </div>
             <h2 class="text-xl font-semibold text-center mb-4">Crea il tuo account</h2>
             <form method="post">
                 {{ form.csrf_token }}
                 <div class="mb-4">
                     <label for="tipo" class="block text-gray-700">Tipo</label>
-                    {{ form.tipo(class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
+                    {{ form.tipo(class="bg-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
                 </div>
                 <div class="mb-4">
                     <label for="nome" class="block text-gray-700">Nome</label>
-                    {{ form.nome(class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
+                    {{ form.nome(class="bg-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
                 </div>
                 <div class="mb-4">
                     <label for="cognome" class="block text-gray-700">Cognome</label>
-                    {{ form.cognome(class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
+                    {{ form.cognome(class="bg-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
                 </div>
                 <div class="mb-4">
                     <label for="email" class="block text-gray-700">Email</label>
-                    {{ form.email(class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
+                    {{ form.email(class="bg-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
                 </div>
                 <div class="mb-6">
                     <label for="password" class="block text-gray-700">Password</label>
-                    {{ form.password(class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
+                    {{ form.password(class="bg-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
                 </div>
                 <div class="flex items-center justify-between mb-4">
                     <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">Crea Account</button>
