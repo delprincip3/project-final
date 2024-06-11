@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - Ortoplan</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@days-ui/days-ui@0.0.5/dist/main.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/output.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
-<body class="bg-gray-100">
-
+<body>
+ <div class="bg-gray-100 min-h-screen mt-auto">
     <!-- Header -->
     <header class="bg-white shadow-md">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -20,7 +18,7 @@
                 <h1 class="text-xl sm:text-2xl lg:text-3xl text-green-600 font-bold">Benvenuto, {{ utente.nome }} {{ utente.cognome }}</h1>
             </div>
             <!-- Mobile Menu Button -->
-            <div class="block lg:hidden">
+            <div class="block lg:hidden max-h-full">
                 <button id="mobile-menu-button" class="text-green-600 focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -29,21 +27,19 @@
             </div>
             <!-- Navigation Menu -->
             <nav class="hidden lg:flex space-x-4">
-                <a href="{{ url_for('login') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Logout</a>
+                <a href="{{ url_for('login') }}" class="btn btn-sm btn-outline text-white bg-green-600 hover:bg-green-700">Logout</a>
             </nav>
         </div>
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden lg:hidden">
             <nav class="px-2 pt-2 pb-4 space-y-1">
-                
-                <a href="{{ url_for('login') }}" class="block px-3 py-2 mt-2 rounded-lg text-center bg-green-600 text-white hover:bg-green-700">Logout</a>
+                <a href="{{ url_for('login') }}" class="block px-3 py-2 mt-2 rounded-lg text-center text-white bg-green-600 hover:bg-green-700">Logout</a>
             </nav>
         </div>
     </header>
-    
 
     <!-- Main content -->
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 py-8 max-h-full">
 
         <!-- User List Section -->
         <div class="bg-white p-6 rounded-lg shadow mb-6">
@@ -53,25 +49,22 @@
                     <li class="flex items-center justify-between py-2 border-b">
                         <span>{{ user.nome }} {{ user.cognome }} (ID: {{ user.id }})</span>
                         <div class="space-x-2">
-                            <button onclick="editUser('{{ user.id }}')" class="btn btn-sm btn-blue">Modifica</button>
-                            <button onclick="deleteUser('{{ user.id }}')" class="btn btn-sm btn-red">Elimina</button>
+                            <button onclick="editUser('{{ user.id }}')" class="btn btn-sm  btn-blue">Modifica</button>
+                            <button onclick="deleteUser('{{ user.id }}')" class="btn btn-sm  btn-red">Elimina</button>
                         </div>
                     </li>
                 {% endfor %}
             </ul>
         </div>
-        </div>
-
-     
-     
-
-        <footer class="bg-green-600 text-white py-4 px-6 text-center m-auto">
-            <p class="text-sm">Copyright © 2024 - All rights reserved by delprincip3</p>
-        </footer>
+    </div>
+</div>
+    <!-- Footer -->
+    <footer class="bg-green-600 text-white py-4 px-6 text-center mt-auto">
+        <p class="text-sm">Copyright © 2024 - All rights reserved by delprincip3</p>
+    </footer>
 
     <script>
-
-document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
             const mobileMenu = document.getElementById('mobile-menu');
             if (mobileMenu.classList.contains('hidden')) {
                 mobileMenu.classList.remove('hidden');
@@ -79,12 +72,13 @@ document.getElementById('mobile-menu-button').addEventListener('click', function
                 mobileMenu.classList.add('hidden');
             }
         });
+
         // Funzioni per gestire modifiche ed eliminazioni
         function editUser(userId) {
             const nome = prompt("Inserisci il nuovo nome:");
             const cognome = prompt("Inserisci il nuovo cognome:");
             const email = prompt("Inserisci la nuova email:");
-            const password = prompt("Inserisci la nuova password:")
+            const password = prompt("Inserisci la nuova password:");
 
             if (nome && cognome && email && password) {
                 const form = document.createElement('form');
@@ -120,7 +114,7 @@ document.getElementById('mobile-menu-button').addEventListener('click', function
                 emailInput.name = 'email';
                 emailInput.value = email;
                 form.appendChild(emailInput);
-                
+
                 const passwordInput = document.createElement('input');
                 passwordInput.type = 'hidden';
                 passwordInput.name = 'password';
@@ -154,6 +148,6 @@ document.getElementById('mobile-menu-button').addEventListener('click', function
                 form.submit();
             }
         }
- </script>
+    </script>
 </body>
 </html>
